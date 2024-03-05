@@ -10,7 +10,8 @@ const organizacionSchema = new Schema(
         contacto: { type: String, required: false },
         correo: { type: String, required: false },
         web: { type: String, required: false },
-        organizaciones: { type: Array, required: false }
+        organizaciones: { type: Array, required: false },
+        privacidad: { type: Enumerator, required: false }
     },
     { collection: "organizacion", id: true}    
 );

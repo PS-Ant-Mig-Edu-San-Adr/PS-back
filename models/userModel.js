@@ -14,7 +14,8 @@ const usuarioSchema = new Schema(
     avatar: { type: String, required: false },
     calendario: { type: Number, required: true },
     grupos: { type: Array, required: false },
-    DNI: { type: String, required: true }
+    DNI: { type: String, required: true },
+    etiquetas: { type: Array, required: false },
   },
   { collection: "usuario", id: true}
 );

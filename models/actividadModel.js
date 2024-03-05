@@ -8,6 +8,7 @@ const actividadSchema = new Schema(
         grupos: { type: Array, required: true },
         miembros: { type: Array, required: true },
         roles: { type: Array, required: true },
+        privacidad: { type: Enumerator, required: true },
     },
     { collection: "actividad", id: true}
 );
