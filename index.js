@@ -19,15 +19,19 @@ app.use(
 app.use(cors());
 
 //routes
-// const example = require("./routes/example");
+const register = require("./routes/register.js");
+const checkUsername = require("./routes/checkUsername.js");
+const login = require("./routes/login.js");
 
 // Ruta al endpoint de la API
-// app.use("/api", example);
+app.use("/api/", register);
+app.use("/api/", checkUsername);
+app.use("/api/", login);
 
 
 app.get("/", (req, res) => {
     res.send(`Working on ${PORT}. Welcome to the ${process.env.APP_NAME} API!`);
-  });
+});
   
 mongoose
 .connect(process.env.MONGODB_URI)

@@ -1,6 +1,25 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+const ZonaHoraria = {
+    GMT: "GMT",
+    EST: "EST",
+    PST: "PST",
+};
+
+const IdiomaPreferido = {
+    Español: "Español",
+    Inglés: "Inglés",
+};
+
+// Enumerador para la configuración de notificaciones
+const ConfigNotificaciones = {
+    Activadas: "Activadas",
+    Desactivadas: "Desactivadas",
+    soloEventos: "soloEventos",
+    soloRecordatorios: "soloRecordatorios",
+};
+
 const usuarioSchema = new Schema(
   {
     nombre: { type: String, required: true },
@@ -8,16 +27,16 @@ const usuarioSchema = new Schema(
     usuario: { type: String, required: true },
     contraseñaHash: { type: String, required: true },
     fechaCreacion: { type: Date, required: false },
-    zonaHoraria: { type: Enumerator, required: false },
-    idiomaPreferido: { type: Enumerator, required: false },
-    configNotificaciones: { type: Enumerator, required: false },
+    zonaHoraria: { type: String, enum: Object.values(ZonaHoraria), required: false },
+    idiomaPreferido: { type: String, enum: Object.values(IdiomaPreferido), required: false },
+    configNotificaciones: { type: String, enum: Object.values(ConfigNotificaciones), required: false },
     avatar: { type: String, required: false },
-    calendario: { type: Number, required: true },
+    calendario: { type: mongoose.Schema.Types.ObjectId, ref: 'calendarioModel', required: true },
     grupos: { type: Array, required: false },
-    DNI: { type: String, required: true },
+    DNI: { type: String, required: false },
     etiquetas: { type: Array, required: false },
   },
-  { collection: "usuario", id: true}
+  { collection: "usuario", id: true }
 );
 
 module.exports = mongoose.model("usuario", usuarioSchema);
