@@ -1,0 +1,28 @@
+
+POST http://localhost:3001/api/eventos/eduardo HTTP/1.1
+Content-Type: application/json
+
+{
+  "evento": {
+    "titulo": "Reunión de equipo",
+    "fechaInicio": "2024-03-10T10:00:00Z",
+    "fechaFin": "2024-03-10T12:00:00Z",
+    "descripcion": "Reunión semanal para discutir los avances del proyecto.",
+    "color": "green",
+    "grupo": 1
+  }
+}
+
+###
+POST http://localhost:3001/api/recordatorios/eduardo HTTP/1.1
+Content-Type: application/json
+
+{
+  "recordatorio": {
+    "titulo": "Comprar leche",
+    "fechaInicio": "2024-03-09T08:00:00Z",
+    "fechaFin": "2024-03-09T08:30:00Z",
+    "descripcion": "No olvidar comprar leche en el supermercado.",
+    "color": "green"
+  }
+}
