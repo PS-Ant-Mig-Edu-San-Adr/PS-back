@@ -69,9 +69,9 @@ router.post('/recordatorios/:username', async (req, res) => {
 
 
 
-router.put('/recordatorios/:username/:recordatorioId', async (req, res) => {
+router.put('/recordatorios/:username/:id', async (req, res) => {
     try {
-        const { username, reminderID } = req.params;
+        const { username, id } = req.params;
         const { updatedReminder } = req.body;
 
         const user = await userModel.findOne({ username: username });
@@ -86,7 +86,7 @@ router.put('/recordatorios/:username/:recordatorioId', async (req, res) => {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
 
-        const reminderIndex = calendar.reminders.findIndex(recordatorio => recordatorio._id.toString() === reminderID);
+        const reminderIndex = calendar.reminders.findIndex(recordatorio => recordatorio._id.toString() === id);
 
         if (reminderIndex === -1) {
             return res.json({ status: 404, success: false, details: 'Recordatorio no encontrado' });
@@ -102,9 +102,9 @@ router.put('/recordatorios/:username/:recordatorioId', async (req, res) => {
     }
 });
 
-router.delete('/recordatorios/:username/:recordatorioId', async (req, res) => {
+router.delete('/recordatorios/:username/:id', async (req, res) => {
     try {
-        const { username, reminderID } = req.params;
+        const { username, id } = req.params;
 
         const user = await userModel.findOne({ username: username });
 
@@ -117,8 +117,7 @@ router.delete('/recordatorios/:username/:recordatorioId', async (req, res) => {
         if (!calendar) {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
-
-        calendar.reminders = calendar.reminders.filter(reminder => reminder._id.toString() !== reminderID);
+        calendar.reminders = calendar.reminders.filter(reminder => reminder._id.toString() !== id);
         await calendar.save();
 
         return res.json({ status: 200, success: true, details: 'Recordatorio eliminado correctamente' });
