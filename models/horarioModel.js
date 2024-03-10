@@ -2,19 +2,19 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 
-const horaSchema = new Schema(
+const timeSchema = new Schema(
     {
-        horaInicio: { type: Date, required: true },
-        horaFinal: { type: Date, required: true }
+        startTime: { type: Date, required: true },
+        endTime: { type: Date, required: true }
     }
 );
 
-const horarioSchema = new Schema(
+const scheduleSchema = new Schema(
     {
-        dias: { type: Array, required: true },
-        horas: [horaSchema] 
+        days: { type: Array, required: true },
+        times: [timeSchema]
     },
-    { collection: "horario", id: true}
+    { collection: "schedule", id: true}
 );
 
-module.exports = mongoose.model("horario", horarioSchema);
+module.exports = mongoose.model("schedule", scheduleSchema);

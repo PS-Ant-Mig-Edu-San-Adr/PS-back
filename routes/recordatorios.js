@@ -3,6 +3,7 @@ const router = express.Router();
 const usuarioModel = require('../models/userModel');
 const calendarioModel = require('../models/calendarioModel');
 
+
 router.get('/recordatorios/:username', async (req, res) => {
     try {
         const { username } = req.params;

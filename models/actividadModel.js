@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const actividadSchema = new Schema(
+const activitySchema = new Schema(
     {
-        nombre: { type: String, required: true },
-        descripcion: { type: String, required: true },
-        grupos: { type: Array, required: true },
-        miembros: { type: Array, required: true },
-        roles: { type: Array, required: true },
-        privacidad: { type: Enumerator, required: true },
+            name: { type: String, required: true },
+            description: { type: String, required: true },
+            groups: { type: Array, required: true },
+            members: { type: Array, required: true },
+            roles: { type: Array, required: true },
+            privacy: { type: Enumerator, required: true },
     },
-    { collection: "actividad", id: true}
+    { collection: "activity", id: true}
 );
 
-module.exports = mongoose.model("actividad", actividadSchema);
+module.exports = mongoose.model("activity", activitySchema);
