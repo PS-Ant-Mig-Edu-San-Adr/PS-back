@@ -11,10 +11,11 @@ const horaSchema = new Schema(
 
 const horarioSchema = new Schema(
     {
+        _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
         dias: { type: Array, required: true },
         horas: [horaSchema] 
     },
-    { collection: "horario", id: true}
+    { collection: "horario" }
 );
 
 module.exports = mongoose.model("horario", horarioSchema);

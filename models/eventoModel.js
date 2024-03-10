@@ -7,6 +7,7 @@ const EstadoEnum = ['Activo', 'Inactivo'];
 
 const eventoSchema = new Schema(
   {
+    _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
     titulo: { type: String, required: true },
     descripcion: { type: String, required: true },
     fechaInicio: { type: Date, required: true },
@@ -19,7 +20,7 @@ const eventoSchema = new Schema(
     grupo: { type: Number, required: true },
     color: { type: String, required: true }
   },
-  { collection: "evento", timestamps: true }
+  { collection: "evento", timestamps: true}
 );
 
 module.exports = mongoose.model("Evento", eventoSchema);

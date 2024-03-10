@@ -28,24 +28,33 @@ router.get('/recordatorios/:username', async (req, res) => {
     }
 });
 
+const Recordatorio = require('../models/recordatorioModel');
+
+// Express router
 router.post('/recordatorios/:username', async (req, res) => {
     try {
         const { username } = req.params;
-        const { recordatorio } = req.body;
+        const { selectedDateStart, selectedDateEnd, selectedRepeat, selectedTitle, selectedColor, selectedDescription } = req.body;
 
         const usuario = await usuarioModel.findOne({ usuario: username });
-
         if (!usuario) {
             return res.json({ status: 404, success: false, details: 'Usuario no encontrado' });
         }
 
         const calendario = await calendarioModel.findOne({ usuario: usuario._id });
-
         if (!calendario) {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
+        const nuevoRecordatorio = new Recordatorio({
+            fechaInicio: selectedDateStart,
+            fechaFin: selectedDateEnd,
+            repetir: selectedRepeat,
+            titulo: selectedTitle,
+            color: selectedColor,
+            descripcion: selectedDescription
+        });
 
-        calendario.recordatorios.push(recordatorio);
+        calendario.recordatorios.push(nuevoRecordatorio);
         await calendario.save();
 
         return res.json({ status: 201, success: true, details: 'Recordatorio creado correctamente' });
@@ -54,6 +63,8 @@ router.post('/recordatorios/:username', async (req, res) => {
         return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
+
+
 
 router.put('/recordatorios/:username/:recordatorioId', async (req, res) => {
     try {
@@ -98,7 +109,8 @@ router.delete('/recordatorios/:username/:recordatorioId', async (req, res) => {
             return res.json({ status: 404, success: false, details: 'Usuario no encontrado' });
         }
 
-        const calendario = await calendarioModel.findOne({ usuario: usuario._id });
+        const calendario = await calendarioModel.findOne({ usuario: usuario._id }).populate('recordatorios');
+
 
         if (!calendario) {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });

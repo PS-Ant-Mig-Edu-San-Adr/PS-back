@@ -22,6 +22,7 @@ const ConfigNotificaciones = {
 
 const usuarioSchema = new Schema(
   {
+    _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
     nombre: { type: String, required: true },
     correo: { type: String, required: true },
     usuario: { type: String, required: true },
@@ -36,7 +37,7 @@ const usuarioSchema = new Schema(
     DNI: { type: String, required: false },
     etiquetas: { type: Array, required: false },
   },
-  { collection: "usuario", id: true }
+  { collection: "usuario" }
 );
 
 module.exports = mongoose.model("usuario", usuarioSchema);

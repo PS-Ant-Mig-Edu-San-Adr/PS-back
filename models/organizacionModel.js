@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const organizacionSchema = new Schema(
     {
+        _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
         nombre: { type: String, required: true },
         descripcion: { type: String, required: true },
         miembros: { type: Array, required: false },
@@ -13,7 +14,7 @@ const organizacionSchema = new Schema(
         organizaciones: { type: Array, required: false },
         privacidad: { type: Enumerator, required: false }
     },
-    { collection: "organizacion", id: true}    
+    { collection: "organizacion" }    
 );
 
 module.exports = mongoose.model("organizacion", organizacionSchema);

@@ -28,6 +28,8 @@ router.get('/eventos/:username', async (req, res) => {
     }
 });
 
+const Evento = require('../models/eventoModel');
+
 router.post('/eventos/:username', async (req, res) => {
     try {
         const { username } = req.params;
@@ -45,7 +47,9 @@ router.post('/eventos/:username', async (req, res) => {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
 
-        calendario.eventos.push(evento);
+        const nuevoEvento = new Evento(evento);
+
+        calendario.eventos.push(nuevoEvento);
         await calendario.save();
 
         return res.json({ status: 201, success: true, details: 'Evento creado correctamente' });
@@ -98,7 +102,7 @@ router.delete('/eventos/:username/:eventoId', async (req, res) => {
             return res.json({ status: 404, success: false, details: 'Usuario no encontrado' });
         }
 
-        const calendario = await calendarioModel.findOne({ usuario: usuario._id });
+        const calendario = await calendarioModel.findOne({ usuario: usuario._id }).populate('eventos');
 
         if (!calendario) {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
