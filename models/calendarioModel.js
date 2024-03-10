@@ -8,12 +8,12 @@ const PrivacyEnum = {
 
 const calendarSchema = new Schema(
     {
-        user: { type: Schema.Types.ObjectId, ref: "user", required: true },
+        userID: { type: Schema.Types.ObjectId, ref: "user", required: true },
         privacy: { type: String, enum: Object.values(PrivacyEnum), required: true },
         events: { type: Array, required: false },
         reminders: { type: Array, required: false }
     },
-    { collection: "calendar", id: true }
+    { collection: "calendars", id: true }
 );
 
 module.exports = mongoose.model("calendar", calendarSchema);

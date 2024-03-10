@@ -10,7 +10,7 @@ const activitySchema = new Schema(
             roles: { type: Array, required: true },
             privacy: { type: Enumerator, required: true },
     },
-    { collection: "activity", id: true}
+    { collection: "activities", id: true}
 );
 
-module.exports = mongoose.model("activity", activitySchema);
+module.exports = mongoose.model("activitiy", activitySchema);

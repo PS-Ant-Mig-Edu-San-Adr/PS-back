@@ -1,6 +1,6 @@
 var express = require("express");
 const userModel = require("../models/userModel");
-const calendarioModel = require("../models/calendarioModel");
+const calendarModel = require("../models/calendarioModel");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken"); // Importamos la biblioteca jsonwebtoken
 const router = express.Router();
@@ -23,31 +23,31 @@ router.post("/register", async (req, res) => {
             fullName: firstName + " " + lastName,
             email: email,
             username: username,
-            hashedPassword: hashedPassword,
+            passwordHash: hashedPassword,
             creationDate: new Date(),
             timeZone: "GMT",
-            preferredLanguage: "Español",
-            notificationSettings: "Desactivadas",
+            preferredLanguage: "Spanish",
+            notificationSettings: "Disabled",
             avatar: null,
+            calendar: null,
             groups: [],
             ID: null,
-            labels: [],
+            tags: [],
         });
 
-        const newCalendar = calendarioModel({
-            username: newUser._id,
-            visibility: "Privado",
+        const userCalendar = calendarModel({
+            userID: newUser._id,
+            privacy: "Private",
             events: [],
             reminders: []
         });
+        await userCalendar.save();
 
-        await nuevoCalendario.save();
-
-        newUser.calendario = nuevoCalendario._id;
+        newUser.calendar = userCalendar._id;
         await newUser.save();
 
         // Generar el token JWT
-        const token = jwt.sign({usuario: newUser.usuario}, secretKey, {});
+        const token = jwt.sign({ email: newUser.email }, secretKey, { expiresIn: '1h' });
 
         res.json({
             user: newUser,

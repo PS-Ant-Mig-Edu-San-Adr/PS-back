@@ -9,12 +9,13 @@ const timeSchema = new Schema(
     }
 );
 
+
 const scheduleSchema = new Schema(
     {
         days: { type: Array, required: true },
         times: [timeSchema]
     },
-    { collection: "schedule", id: true}
+    { collection: "schedules", id: true}
 );
 
 module.exports = mongoose.model("schedule", scheduleSchema);

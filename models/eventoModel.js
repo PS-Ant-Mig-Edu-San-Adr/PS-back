@@ -19,7 +19,7 @@ const eventSchema = new Schema(
         group: { type: Number, required: true },
         color: { type: String, required: true }
     },
-    { collection: "event", timestamps: true }
+    { collection: "events", timestamps: true }
 );
 
-module.exports = mongoose.model("Event", eventSchema);
+module.exports = mongoose.model("event", eventSchema);

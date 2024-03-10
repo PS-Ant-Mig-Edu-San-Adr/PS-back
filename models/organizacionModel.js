@@ -13,7 +13,7 @@ const organizationSchema = new Schema(
             organizations: { type: Array, required: false },
             privacy: { type: Enumerator, required: false }
     },
-    { collection: "organization", id: true}
+    { collection: "organizations", id: true}
 );
 
 module.exports = mongoose.model("organization", organizationSchema);

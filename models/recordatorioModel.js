@@ -12,7 +12,7 @@ const reminderSchema = new Schema(
             repeat: { type: String, enum: RepeatEnum, required: true, default: "None" },
             color: { type: String, required: true }
     },
-    { collection: "reminder", id: true}
+    { collection: "reminders", id: true}
 );
 
 module.exports = mongoose.model("reminder", reminderSchema);

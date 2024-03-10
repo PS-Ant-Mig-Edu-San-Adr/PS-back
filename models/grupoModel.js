@@ -11,7 +11,7 @@ const groupSchema = new Schema(
             privacy: { type: Enumerator, required: true },
             schedules: { type: Array, required: false }
     },
-    { collection: "group", id: true}
+    { collection: "groups", id: true}
 );
 
 module.exports = mongoose.model("group", groupSchema);
