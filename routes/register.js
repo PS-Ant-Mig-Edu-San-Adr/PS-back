@@ -1,24 +1,26 @@
 var express = require("express");
 const userModel = require("../models/userModel");
 const calendarioModel = require("../models/calendarioModel");
-
+const crypto = require("crypto");
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
     const { email, password, firstName, lastName, username } = req.body;
+
+    // Hashear la contraseña utilizando SHA-256
+    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
     const match = await userModel.find({
         $or: [{ email: email }, { username: username }],
     });
 
     if (!match[0]) {
-
         // Crear un nuevo usuario
         const newUser = userModel({
         nombre: firstName + " " + lastName,
         correo: email,
         usuario: username,
-        contraseñaHash: password,
+        contraseñaHash: hashedPassword,
         fechaCreacion: new Date(),
         zonaHoraria: "GMT",
         idiomaPreferido: "Español",

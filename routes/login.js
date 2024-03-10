@@ -1,15 +1,22 @@
+
+
+
+
 var express = require("express");
 const userModel = require("../models/userModel");
-
+const crypto = require("crypto");
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
+    // Hashear la contraseña utilizando SHA-256
+    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
     try {
         const user = await userModel.findOne({ correo: email });
 
-        if (user && user.contraseñaHash === password) {
+        if (user && user.contraseñaHash === hashedPassword) {
             res.json({
                 user: user,
                 status: 200,
