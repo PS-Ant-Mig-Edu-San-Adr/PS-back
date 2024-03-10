@@ -1,20 +1,19 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const organizacionSchema = new Schema(
+const organizationSchema = new Schema(
     {
-        _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
-        nombre: { type: String, required: true },
-        descripcion: { type: String, required: true },
-        miembros: { type: Array, required: false },
-        roles: { type: Array, required: false },
-        contacto: { type: String, required: false },
-        correo: { type: String, required: false },
-        web: { type: String, required: false },
-        organizaciones: { type: Array, required: false },
-        privacidad: { type: Enumerator, required: false }
+            name: { type: String, required: true },
+            description: { type: String, required: true },
+            members: { type: Array, required: false },
+            roles: { type: Array, required: false },
+            contact: { type: String, required: false },
+            email: { type: String, required: false },
+            website: { type: String, required: false },
+            organizations: { type: Array, required: false },
+            privacy: { type: Enumerator, required: false }
     },
-    { collection: "organizacion" }    
+    { collection: "organizations", id: true}
 );
 
-module.exports = mongoose.model("organizacion", organizacionSchema);
+module.exports = mongoose.model("organization", organizationSchema);

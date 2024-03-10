@@ -1,60 +1,68 @@
 var express = require("express");
 const userModel = require("../models/userModel");
-const calendarioModel = require("../models/calendarioModel");
+const calendarModel = require("../models/calendarioModel");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken"); // Importamos la biblioteca jsonwebtoken
 const router = express.Router();
+const secretKey = require('./secretKey');
+
 
 router.post("/register", async (req, res) => {
-    const { email, password, firstName, lastName, username } = req.body;
+    const {email, password, firstName, lastName, username} = req.body;
 
     // Hashear la contraseña utilizando SHA-256
     const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
     const match = await userModel.find({
-        $or: [{ email: email }, { username: username }],
+        $or: [{email: email}, {username: username}],
     });
 
     if (!match[0]) {
         // Crear un nuevo usuario
         const newUser = userModel({
-        nombre: firstName + " " + lastName,
-        correo: email,
-        usuario: username,
-        contraseñaHash: hashedPassword,
-        fechaCreacion: new Date(),
-        zonaHoraria: "GMT",
-        idiomaPreferido: "Español",
-        configNotificaciones: "Desactivadas",
-        avatar: null,
-        grupos: [],
-        DNI: null,
-        etiquetas: [],
+            fullName: firstName + " " + lastName,
+            email: email,
+            username: username,
+            passwordHash: hashedPassword,
+            creationDate: new Date(),
+            timeZone: "GMT",
+            preferredLanguage: "Spanish",
+            notificationSettings: "Disabled",
+            avatar: null,
+            calendar: null,
+            groups: [],
+            ID: null,
+            tags: [],
         });
 
-        const nuevoCalendario = calendarioModel({
-            usuario: newUser._id,
-            privacidad: "Privado",
-            eventos: [],
-            recordatorios: []
+        const userCalendar = calendarModel({
+            userID: newUser._id,
+            privacy: "Private",
+            events: [],
+            reminders: []
         });
+        await userCalendar.save();
 
-        await nuevoCalendario.save();
-
-        newUser.calendario = nuevoCalendario._id;
+        newUser.calendar = userCalendar._id;
         await newUser.save();
 
+        // Generar el token JWT
+        const token = jwt.sign({ email: newUser.email }, secretKey, { expiresIn: '1h' });
+
         res.json({
-        user: newUser,
-        status: 200,
-        success: true,
-        details: "User created successfully",
+            user: newUser,
+            token: token,
+            status: 200,
+            success: true,
+            details: "User created successfully",
         });
     } else {
         res.json({
-        user: match,
-        status: 201,
-        success: false,
-        details: "User already exists",
+            user: null,
+            token: null,
+            status: 201,
+            success: false,
+            details: "User already exists",
         });
     }
 });

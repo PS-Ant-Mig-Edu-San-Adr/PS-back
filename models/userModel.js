@@ -1,43 +1,43 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const ZonaHoraria = {
+const TimeZone = {
     GMT: "GMT",
     EST: "EST",
     PST: "PST",
 };
 
-const IdiomaPreferido = {
-    Español: "Español",
-    Inglés: "Inglés",
+const PreferredLanguage = {
+    Spanish: "Spanish",
+    English: "English",
 };
 
-// Enumerador para la configuración de notificaciones
-const ConfigNotificaciones = {
-    Activadas: "Activadas",
-    Desactivadas: "Desactivadas",
-    soloEventos: "soloEventos",
-    soloRecordatorios: "soloRecordatorios",
+// Enumerator for notification configuration
+const NotificationConfig = {
+    Enabled: "Enabled",
+    Disabled: "Disabled",
+    OnlyEvents: "OnlyEvents",
+    OnlyReminders: "OnlyReminders",
 };
 
-const usuarioSchema = new Schema(
-  {
-    _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
-    nombre: { type: String, required: true },
-    correo: { type: String, required: true },
-    usuario: { type: String, required: true },
-    contraseñaHash: { type: String, required: true },
-    fechaCreacion: { type: Date, required: false },
-    zonaHoraria: { type: String, enum: Object.values(ZonaHoraria), required: false },
-    idiomaPreferido: { type: String, enum: Object.values(IdiomaPreferido), required: false },
-    configNotificaciones: { type: String, enum: Object.values(ConfigNotificaciones), required: false },
-    avatar: { type: String, required: false },
-    calendario: { type: mongoose.Schema.Types.ObjectId, ref: 'calendarioModel', required: true },
-    grupos: { type: Array, required: false },
-    DNI: { type: String, required: false },
-    etiquetas: { type: Array, required: false },
-  },
-  { collection: "usuario" }
+const userSchema = new Schema(
+    {
+        fullName: { type: String, required: true },
+        email: { type: String, required: true },
+        username: { type: String, required: true },
+        passwordHash: { type: String, required: true },
+        creationDate: { type: Date, required: false },
+        timeZone: { type: String, enum: Object.values(TimeZone), required: false },
+        preferredLanguage: { type: String, enum: Object.values(PreferredLanguage), required: false },
+        notificationSettings: { type: String, enum: Object.values(NotificationConfig), required: false },
+        avatar: { type: String, required: false },
+        calendar: { type: mongoose.Schema.Types.ObjectId, ref: 'calendarModel', required: true },
+        groups: { type: Array, required: false },
+        ID: { type: String, required: false },
+        tags: { type: Array, required: false },
+    },
+    { collection: "users", id: true }
 );
 
-module.exports = mongoose.model("usuario", usuarioSchema);
+module.exports = mongoose.model("user", userSchema);
+

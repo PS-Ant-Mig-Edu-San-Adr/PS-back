@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/check-username/:username', async (req, res) => {
     const { username } = req.params;
 
-    const existingUser = await userModel.findOne({ usuario: username });
+    const existingUser = await userModel.findOne({ username: username });
 
     if (existingUser) {
         res.json({ status: 201, exists: true, details: "User already exists"});

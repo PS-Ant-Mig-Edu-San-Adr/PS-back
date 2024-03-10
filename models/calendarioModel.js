@@ -1,20 +1,19 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const PrivacidadEnum = {
-  Publico: "Público",
-  Privado: "Privado"
+const PrivacyEnum = {
+    Public: "Public",
+    Private: "Private"
 };
 
-const calendarioSchema = new Schema(
-  {
-    _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
-    usuario: { type: Schema.Types.ObjectId, ref: "usuario", required: true },
-    privacidad: { type: String, enum: Object.values(PrivacidadEnum), required: true },
-    eventos: { type: Array, required: false },
-    recordatorios: { type: Array, required: false }
-  },
-  { collection: "calendario" }
+const calendarSchema = new Schema(
+    {
+        userID: { type: Schema.Types.ObjectId, ref: "user", required: true },
+        privacy: { type: String, enum: Object.values(PrivacyEnum), required: true },
+        events: { type: Array, required: false },
+        reminders: { type: Array, required: false }
+    },
+    { collection: "calendars", id: true }
 );
 
-module.exports = mongoose.model("calendario", calendarioSchema);
+module.exports = mongoose.model("calendar", calendarSchema);

@@ -1,19 +1,18 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const grupoSchema = new Schema(
+const groupSchema = new Schema(
     {
-        _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
-        nombre: { type: String, required: true },
-        descripcion: { type: String, required: true },
-        miembros: { type: Array, required: false },
-        eventos: { type: Array, required: false },
-        roles: { type: Array, required: false },
-        privacidad: { type: Enumerator, required: true },
-        horarios: { type: Array, required: false }
+            name: { type: String, required: true },
+            description: { type: String, required: true },
+            members: { type: Array, required: false },
+            events: { type: Array, required: false },
+            roles: { type: Array, required: false },
+            privacy: { type: Enumerator, required: true },
+            schedules: { type: Array, required: false }
     },
-    { collection: "grupo" }    
+    { collection: "groups", id: true}
 );
 
-module.exports = mongoose.model("grupo", grupoSchema);
+module.exports = mongoose.model("group", groupSchema);
 

@@ -24,6 +24,8 @@ const checkUsername = require("./routes/checkUsername.js");
 const login = require("./routes/login.js");
 const eventos = require("./routes/eventos.js");
 const recordatorios = require("./routes/recordatorios.js");
+const secretKey = require('./routes/secretKey');
+
 
 // Ruta al endpoint de la API
 app.use("/api/", register);
@@ -33,7 +35,7 @@ app.use("/api/", eventos);
 app.use("/api/", recordatorios);
 
 app.get("/", (req, res) => {
-    res.send(`Working on ${PORT}. Welcome to the ${process.env.APP_NAME} API!`);
+    res.send(`Working on ${PORT}. Welcome to the ${process.env.APP_NAME} API!\nSecret key for JWT: ${secretKey}`);
 });
   
 mongoose
