@@ -37,7 +37,7 @@ app.use("/api/", recordatorios);
 app.use("/api/", organizaciones);
 
 app.get("/", (req, res) => {
-    res.send(`Working on ${PORT}. Welcome to the ${process.env.APP_NAME} API!\nSecret key for JWT: ${secretKey}`);
+    res.send(`Working on ${PORT}. Welcome to the ${process.env.APP_NAME}`);
 });
   
 mongoose
