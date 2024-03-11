@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userModel = require('../models/userModel');
 const calendarModel = require('../models/calendarioModel');
+const reminderModel = require('../models/recordatorioModel');
 
 
 router.get('/recordatorios/:username', async (req, res) => {
@@ -15,7 +16,6 @@ router.get('/recordatorios/:username', async (req, res) => {
         }
 
         const calendar = await calendarModel.findOne({ userID: user._id });
-        console.log("Calendar: ", calendar)
         if (!calendar) {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
@@ -29,11 +29,13 @@ router.get('/recordatorios/:username', async (req, res) => {
     }
 });
 
+const Recordatorio = require('../models/recordatorioModel');
+
+// Express router
 router.post('/recordatorios/:username', async (req, res) => {
     try {
         const { username } = req.params;
-        const { reminder } = req.body;
-        console.log("Reminder: ", reminder)
+        const { selectedDateStart, selectedDateEnd, selectedRepeat, selectedTitle, selectedColor, selectedDescription } = req.body;
 
         const user = await userModel.findOne({ username: username });
 
@@ -46,8 +48,16 @@ router.post('/recordatorios/:username', async (req, res) => {
         if (!calendar) {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
+        const newReminder = new reminderModel({
+            startDate: selectedDateStart,
+            endDate: selectedDateEnd,
+            repeat: selectedRepeat,
+            title: selectedTitle,
+            color: selectedColor,
+            description: selectedDescription
+        });
 
-        calendar.reminders.push(reminder);
+        calendar.reminders.push(newReminder);
         await calendar.save();
 
         return res.json({ status: 201, success: true, details: 'Recordatorio creado correctamente' });
@@ -57,15 +67,17 @@ router.post('/recordatorios/:username', async (req, res) => {
     }
 });
 
-router.put('/recordatorios/:username/:recordatorioId', async (req, res) => {
+
+
+router.put('/recordatorios/:username/:id', async (req, res) => {
     try {
-        const { username, reminderID } = req.params;
-        const { updatedReminder } = req.body;
+        const { username, id } = req.params;
+        const { selectedDateStart, selectedDateEnd, selectedRepeat, selectedTitle, selectedColor, selectedDescription } = req.body;
 
         const user = await userModel.findOne({ username: username });
 
         if (!user) {
-            return res.json({ status: 404, success: false, details: 'Usuario no encontrado' });
+            return res.json({ status:404, success: false, details: 'Usuario no encontrado' });
         }
 
         const calendar = await calendarModel.findOne({ userID: user._id });
@@ -74,13 +86,22 @@ router.put('/recordatorios/:username/:recordatorioId', async (req, res) => {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
 
-        const reminderIndex = calendar.reminders.findIndex(recordatorio => recordatorio._id.toString() === reminderID);
+        const reminderIndex = calendar.reminders.findIndex(reminder => reminder._id.toString() === id);
 
         if (reminderIndex === -1) {
             return res.json({ status: 404, success: false, details: 'Recordatorio no encontrado' });
         }
 
-        calendar.reminders[reminderIndex] = updatedReminder;
+        calendar.reminders[reminderIndex] = {
+            ...calendar.reminders[reminderIndex],
+            startDate: selectedDateStart,
+            endDate: selectedDateEnd,
+            repeat: selectedRepeat,
+            title: selectedTitle,
+            color: selectedColor,
+            description: selectedDescription
+        };
+
         await calendar.save();
 
         return res.json({ status: 200, success: true, details: 'Recordatorio modificado correctamente' });
@@ -90,9 +111,9 @@ router.put('/recordatorios/:username/:recordatorioId', async (req, res) => {
     }
 });
 
-router.delete('/recordatorios/:username/:recordatorioId', async (req, res) => {
+router.delete('/recordatorios/:username/:id', async (req, res) => {
     try {
-        const { username, reminderID } = req.params;
+        const { username, id } = req.params;
 
         const user = await userModel.findOne({ username: username });
 
@@ -105,8 +126,7 @@ router.delete('/recordatorios/:username/:recordatorioId', async (req, res) => {
         if (!calendar) {
             return res.json({ status: 404, success: false, details: 'Calendario no encontrado para este usuario' });
         }
-
-        calendar.reminders = calendar.reminders.filter(reminder => reminder._id.toString() !== reminderID);
+        calendar.reminders = calendar.reminders.filter(reminder => reminder._id.toString() !== id);
         await calendar.save();
 
         return res.json({ status: 200, success: true, details: 'Recordatorio eliminado correctamente' });

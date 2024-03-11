@@ -29,6 +29,8 @@ router.get('/eventos/:username', async (req, res) => {
     }
 });
 
+const Evento = require('../models/eventoModel');
+
 router.post('/eventos/:username', async (req, res) => {
     try {
         const { username } = req.params;

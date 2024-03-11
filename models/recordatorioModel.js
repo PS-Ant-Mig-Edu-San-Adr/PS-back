@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const RepeatEnum = ['Daily', 'Weekly', 'Monthly', 'Yearly', 'None'];
+const RepeatEnum = ['Diario', 'Semanal', 'Mensual', 'Anual', 'Ninguno'];
 
 const reminderSchema = new Schema(
     {
@@ -9,7 +9,7 @@ const reminderSchema = new Schema(
             description: { type: String, required: true },
             startDate: { type: Date, required: true },
             endDate: { type: Date, required: true },
-            repeat: { type: String, enum: RepeatEnum, required: true, default: "None" },
+            repeat: { type: String, enum: RepeatEnum, required: true, default: "Ninguno" },
             color: { type: String, required: true }
     },
     { collection: "reminders", id: true}
