@@ -27,3 +27,6 @@ Content-Type: application/json
     "selectedColor": "green"
   }
 }
+
+###
+GET http://localhost:3001/api/actividades/usuario1 HTTP/1.1
