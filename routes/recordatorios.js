@@ -29,8 +29,6 @@ router.get('/recordatorios/:username', async (req, res) => {
     }
 });
 
-const Recordatorio = require('../models/recordatorioModel');
-
 // Express router
 router.post('/recordatorios/:username', async (req, res) => {
     try {

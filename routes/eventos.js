@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const userModel = require('../models/userModel');
 const calendarModel = require('../models/calendarioModel');
+const eventModel = require('../models/eventoModel');
 
 // Función para buscar usuario y calendario
 const findUserAndCalendar = async (username) => {
@@ -29,25 +30,56 @@ router.get('/eventos/:username', async (req, res) => {
     }
 });
 
-const Evento = require('../models/eventoModel');
-
 router.post('/eventos/:username', async (req, res) => {
     try {
         const { username } = req.params;
-        const { event } = req.body;
-        const { user, calendar } = await findUserAndCalendar(username);
+        const { 
+            startDate, 
+            endDate, 
+            repeat, 
+            title, 
+            color, 
+            description, 
+            location, 
+            group, 
+            notes, 
+            status, 
+            attachments 
+        } = req.body;
 
-        if (!user || !calendar) {
-            return res.json({ status: 404, success: false, details: !user ? 'Usuario no encontrado' : 'Calendario no encontrado para este usuario' });
+        const user = await userModel.findOne({ username: username });
+
+        if (!user) {
+            return res.status(404).json({ success: false, details: 'Usuario no encontrado' });
         }
 
-        calendar.events.push(event);
+        const calendar = await calendarModel.findOne({ userID: user._id });
+
+        if (!calendar) {
+            return res.status(404).json({ success: false, details: 'Calendario no encontrado para este usuario' });
+        }
+
+        const newEvent = new eventModel({
+            startDate,
+            endDate,
+            repeat,
+            title,
+            color,
+            description,
+            location,
+            group,
+            notes,
+            status,
+            attachments
+        });
+
+        calendar.events.push(newEvent);
         await calendar.save();
 
-        return res.json({ status: 201, success: true, details: 'Evento creado correctamente' });
+        return res.status(201).json({ success: true, details: 'Evento creado correctamente' });
     } catch (error) {
-        console.error('Error al crear el evento:', error);
-        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
+        console.error('Error creating the event:', error);
+        return res.status(500).json({ success: false, details: 'Error interno del servidor' });
     }
 });
 

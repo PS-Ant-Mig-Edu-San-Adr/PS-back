@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 // Definition of enums for 'repeat' and 'status'
-const RepeatEnum = ['Daily', 'Weekly', 'Monthly', 'Yearly', 'None'];
-const StatusEnum = ['Active', 'Inactive'];
+const RepeatEnum = ['Diario', 'Semanal', 'Mensual', 'Anual', 'Ninguno'];
+const StatusEnum = ['Activo', 'Inactivo'];
 
 const eventSchema = new Schema(
     {
@@ -12,14 +12,14 @@ const eventSchema = new Schema(
         startDate: { type: Date, required: true },
         endDate: { type: Date, required: true },
         location: { type: String, required: false },
-        repeat: { type: String, enum: RepeatEnum, required: false, default: 'None'},
+        repeat: { type: String, enum: RepeatEnum, required: false, default: 'Ninguno'},
         notes: { type: String, required: false },
-        status: { type: String, enum: StatusEnum, required: true, default: 'Active' },
+        status: { type: String, enum: StatusEnum, required: true, default: 'Activo' },
         attachments: { type: String, required: false },
         group: { type: Number, required: true },
         color: { type: String, required: true }
     },
-    { collection: "events", timestamps: true }
+    { collection: "events", timestamps: true, id: true}
 );
 
 module.exports = mongoose.model("event", eventSchema);
