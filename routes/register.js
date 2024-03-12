@@ -28,7 +28,6 @@ router.post("/register", async (req, res) => {
             timeZone: "GMT",
             preferredLanguage: "Spanish",
             notificationSettings: "Disabled",
-            avatar: null,
             calendar: null,
             groups: [],
             ID: null,
