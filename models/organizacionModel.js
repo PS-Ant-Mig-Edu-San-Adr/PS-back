@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+const privacyEnum = ["Público", "Privado"];
+
 const organizationSchema = new Schema(
     {
             name: { type: String, required: true },
@@ -11,7 +13,7 @@ const organizationSchema = new Schema(
             email: { type: String, required: false },
             website: { type: String, required: false },
             organizations: { type: Array, required: false },
-            privacy: { type: Enumerator, required: false }
+            privacy: { type: String, enum: privacyEnum, default: "Público", required: true }
     },
     { collection: "organizations", id: true}
 );
