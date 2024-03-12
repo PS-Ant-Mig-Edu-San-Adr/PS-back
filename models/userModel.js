@@ -30,7 +30,7 @@ const userSchema = new Schema(
         timeZone: { type: String, enum: Object.values(TimeZone), required: false },
         preferredLanguage: { type: String, enum: Object.values(PreferredLanguage), required: false },
         notificationSettings: { type: String, enum: Object.values(NotificationConfig), required: false },
-        avatar: { type: String, required: false, default: "https://img.freepik.com/free-vector/illustration-businessman_53876-5856.jpg?w=1380&t=st=1709673019~exp=1709673619~hmac=9d504ec5aa5c1cd54b6b670aa754df8dd5c68099f78b9fd2241712c0eabd41f0" },
+        avatar: { type: String, required: false, default: "https://hips.hearstapps.com/hmg-prod/images/captura-de-pantalla-2023-10-11-a-las-15-43-03-6526a6734d03a.jpg?crop=0.729xw:1.00xh;0.0795xw,0&resize=1200:*" },
         calendar: { type: mongoose.Schema.Types.ObjectId, ref: 'calendarModel', required: true },
         groups: { type: Array, required: false },
         tags: { type: Array, required: false },
