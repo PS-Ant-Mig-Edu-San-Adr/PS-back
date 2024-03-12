@@ -1,26 +1,25 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-// Definición del enum para 'repetir' y 'estado'
-const RepetirEnum = ['Diario', 'Semanal', 'Mensual', 'Anual', 'Ninguno'];
-const EstadoEnum = ['Activo', 'Inactivo'];
+// Definition of enums for 'repeat' and 'status'
+const RepeatEnum = ['Diario', 'Semanal', 'Mensual', 'Anual', 'Ninguno'];
+const StatusEnum = ['Activo', 'Inactivo'];
 
-const eventoSchema = new Schema(
-  {
-    titulo: { type: String, required: true },
-    descripcion: { type: String, required: true },
-    fechaInicio: { type: Date, required: true },
-    fechaFin: { type: Date, required: true },
-    ubicacion: { type: String, required: false },
-    repetir: { type: String, enum: RepetirEnum, required: false, default: 'Ninguno'},
-    notas: { type: String, required: false },
-    estado: { type: String, enum: EstadoEnum, required: true, default: 'Activo' },
-    adjuntos: { type: String, required: false },
-    grupo: { type: Number, required: true },
-    color: { type: String, required: true }
-  },
-  { collection: "evento", timestamps: true }
+const eventSchema = new Schema(
+    {
+        title: { type: String, required: true },
+        description: { type: String, required: true },
+        startDate: { type: Date, required: true },
+        endDate: { type: Date, required: true },
+        location: { type: String, required: false },
+        repeat: { type: String, enum: RepeatEnum, required: false, default: 'Ninguno'},
+        notes: { type: String, required: false },
+        status: { type: String, enum: StatusEnum, required: true, default: 'Activo' },
+        attachments: { type: String, required: false },
+        group: { type: Number, required: true },
+        color: { type: String, required: true }
+    },
+    { collection: "events", timestamps: true, id: true}
 );
 
-module.exports = mongoose.model("Evento", eventoSchema);
-
+module.exports = mongoose.model("event", eventSchema);

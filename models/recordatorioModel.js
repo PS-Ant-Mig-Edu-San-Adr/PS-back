@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const RepetirEnum = ['Diario', 'Semanal', 'Mensual', 'Anual', 'Ninguno'];
+const RepeatEnum = ['Diario', 'Semanal', 'Mensual', 'Anual', 'Ninguno'];
 
-const recordatorioSchema = new Schema(
+const reminderSchema = new Schema(
     {
-        titulo: { type: String, required: true },
-        descripcion: { type: String, required: true },
-        fechaInicio: { type: Date, required: true },
-        fechaFin: { type: Date, required: true },
-        repetir: { type: String, enum: RepetirEnum, required: true, default: "Ninguno" },
-        color: { type: String, required: true }
+            title: { type: String, required: true },
+            description: { type: String, required: true },
+            startDate: { type: Date, required: true },
+            endDate: { type: Date, required: true },
+            repeat: { type: String, enum: RepeatEnum, required: true, default: "Ninguno" },
+            color: { type: String, required: true }
     },
-    { collection: "recordatorio", id: true}
+    { collection: "reminders", id: true}
 );
 
-module.exports = mongoose.model("recordatorio", recordatorioSchema);
+module.exports = mongoose.model("reminder", reminderSchema);
