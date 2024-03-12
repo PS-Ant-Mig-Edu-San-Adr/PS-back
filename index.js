@@ -26,6 +26,7 @@ const eventos = require("./routes/eventos.js");
 const recordatorios = require("./routes/recordatorios.js");
 const secretKey = require('./routes/secretKey');
 const organizaciones =  require('./routes/organizations.js');
+const perfiles = require('./routes/user.js');
 
 
 // Ruta al endpoint de la API
@@ -35,6 +36,8 @@ app.use("/api/", login);
 app.use("/api/", eventos);
 app.use("/api/", recordatorios);
 app.use("/api/", organizaciones);
+app.use("/api/", perfiles);
+
 
 app.get("/", (req, res) => {
     res.send(`Working on ${PORT}. Welcome to the ${process.env.APP_NAME}`);

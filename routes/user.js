@@ -70,4 +70,21 @@ router.delete("/user/:username", async (req, res) => {
     }
 });
 
+router.get("/searchUser:username", async (req, res) => {
+    try {
+        const { username } = req.params;
+
+        const user = await userModel.findOne(username);
+
+        if (!user) {
+            return res.json({ status: 404, success: false, details: 'Usuario no encontrada' });
+        } 
+
+        return res.json({ status: 200, success: true, details: 'Usuario encontrado correctamente', user });
+    } catch (error) {
+        console.error('Error al encontrar al usuario:', error);
+        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+});
+
 module.exports = router;
