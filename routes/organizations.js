@@ -6,28 +6,30 @@ const organizationModel = require('../models/organizacionModel');
 
 router.post('/organizaciones/:username', async (req, res) => {
     try {
-
-        // Le paso username porque asumo, que el usuario que crea la organización será el  admin  de esta
+        
         const { username } = req.params;
-        const { selectedName, selectedDescription, selectedContact, selectedEmail, selectedWebsite, selectedPrivacy } = req.body;
+        const { name, description, contact, email, domain, privacy } = req.body;
 
-        const organizacion = await organizacionModel.findOne({ name: selectedName });
+        const organizacion = await organizationModel.findOne({ name: name });
+        const user = await userModel.findOne({ username });
 
         if (organizacion) {
-            return res.json({ status: 404, success: false, details: 'Organización ya creada' });
+            return res.json({ status: 404, success: false, details: 'Organization does already exists' });
+        }else if (!user) {
+            return res.json({ status: 405, success: false, details: 'User not found' });
         }
 
-        const newOrganizacion = new organizacionModel({
-            name: selectedName,
-            description: selectedDescription,
-            contact: selectedContact,
-            email: selectedEmail,
-            website: selectedWebsite,
-            privacy: selectedPrivacy
+        const newOrganizacion = new organizationModel({
+            name: name,
+            description: description,
+            contact: contact,
+            email: email,
+            privacy: privacy,
+            members: [{ _id: user._id, role: "admin" }]
         });
 
         await newOrganizacion.save();
-        return res.json({ status: 200, success: true, details: 'Organizacion creada correctamente' });
+        return res.json({ status: 200, success: true, details: 'The organization was created succesfully' });
     
     } catch (error) {
         console.error('Error al crear la  organizacion:', error);

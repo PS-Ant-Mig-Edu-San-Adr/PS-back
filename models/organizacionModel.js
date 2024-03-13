@@ -3,12 +3,18 @@ const { Schema } = mongoose;
 
 const privacyEnum = ["Público", "Privado"];
 
+const role = ["admin", "member"];
+
+const member = new Schema({
+    _id: mongoose.Types.ObjectId,
+    role: { type: String, enum: role, required: true }
+});
+
 const organizationSchema = new Schema(
     {
             name: { type: String, required: true },
             description: { type: String, required: true },
-            members: { type: Array, required: false },
-            roles: { type: Array, required: false },
+            members: { type: [member], required: true },
             contact: { type: String, required: false },
             email: { type: String, required: false },
             website: { type: String, required: false },
