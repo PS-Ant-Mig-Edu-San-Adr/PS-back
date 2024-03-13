@@ -25,7 +25,8 @@ router.post('/organizaciones/:username', async (req, res) => {
             contact: contact,
             email: email,
             privacy: privacy,
-            members: [{ _id: user._id, role: "admin" }]
+            members: [{ _id: user._id, role: "admin" }],
+            domain: domain
         });
 
         await newOrganizacion.save();
