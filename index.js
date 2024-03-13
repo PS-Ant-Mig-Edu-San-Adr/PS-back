@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require('path');
 
 require("dotenv").config();
 
@@ -50,5 +51,7 @@ mongoose
 app.use("/api/", (req, res) => {
     res.send(`Working on ${PORT}. Welcome to the ${process.env.APP_NAME} API!`);
 });
+
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.listen(PORT, console.log("Server running on " + PORT));

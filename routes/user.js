@@ -2,10 +2,16 @@ var express = require("express");
 const userModel = require("../models/userModel");
 const crypto = require("crypto");
 const router = express.Router();
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
+
+const multer  = require('multer');
+const upload = multer({ dest: os.tmpdir() });
 
 router.put("/user/:username", async (req, res) => {
     const username = req.params.username;
-    const { fullName, password, email, timeZone } = req.body;
+    const { inputUsername, password, email, timeZone, fileName } = req.body;
 
     try {
         // Buscar al usuario por su nombre de usuario
@@ -18,14 +24,16 @@ router.put("/user/:username", async (req, res) => {
             });
         }
 
-        if (fullName) user.fullName = fullName;
+        if (inputUsername) user.username = inputUsername;
         if (password) user.passwordHash = crypto.createHash('sha256').update(password).digest('hex');
         if (email) user.email = email;
         if (timeZone) user.timeZone = timeZone;
+        if (fileName) user.avatar = `http://localhost:3001/assets/profiles/${fileName}`;
 
         await user.save();
 
         res.json({
+            user: user,
             status: 200,
             success: true,
             details: "Usuario modificado correctamente"
@@ -70,21 +78,41 @@ router.delete("/user/:username", async (req, res) => {
     }
 });
 
-router.get("/searchUser:username", async (req, res) => {
+router.get("/searchUser/:username", async (req, res) => {
     try {
         const { username } = req.params;
 
-        const user = await userModel.findOne(username);
+        const user = await userModel.findOne({ username: username });
 
         if (!user) {
             return res.json({ status: 404, success: false, details: 'Usuario no encontrada' });
         } 
 
         return res.json({ status: 200, success: true, details: 'Usuario encontrado correctamente', user });
+        
     } catch (error) {
         console.error('Error al encontrar al usuario:', error);
         return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
+
+
+router.post("/image", upload.single('file'), async (req, res) => {
+    const file = req.file;
+    const originalFileName = file.originalname;
+
+    const imagePath = path.join(__dirname, '..', 'assets', 'profiles', originalFileName);
+
+
+    try {
+        
+        fs.writeFileSync(imagePath, fs.readFileSync(file.path));
+        res.json({ success: true, details: "Imagen guardada correctamente", status: 200, name: originalFileName});
+    } catch (error) {
+        console.error("Error al guardar la imagen:", error);
+        res.json({ success: false, details: "Error al guardar la imagen", status: 500 });
+    }
+});
+
 
 module.exports = router;
