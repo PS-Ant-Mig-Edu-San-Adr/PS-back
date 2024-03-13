@@ -114,5 +114,39 @@ router.post("/image", upload.single('file'), async (req, res) => {
     }
 });
 
+router.put("/userNotificactions/:username", async (req, res) => {
+    const username = req.params.username;
+    const { notificationsOption } = req.body;
+
+    try {
+        // Buscar al usuario por su nombre de usuario
+        const user = await userModel.findOne({ username });
+        if (!user) {
+            return res.json({
+                success: false,
+                details: "Usuario no encontrado",
+                status: 404
+            });
+        }
+
+        if (notificationsOption) user.notificationSettings  = notificationsOption;
+        
+        await user.save();
+
+        res.json({
+            user: user,
+            status: 200,
+            success: true,
+            details: "Usuario modificado correctamente"
+        });
+    } catch (error) {
+        console.error(error);
+        res.json({
+            status: 500,
+            success: false,
+            details: "Error interno del servidor"
+        });
+    }
+});
 
 module.exports = router;
