@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const activityModel = require('../models/activityModel');
+const organizationModel = require('../models/organizacionModel');
 
 // Obtener todas las actividades de un usuario
 router.get('/activities/:username', async (req, res) => {
@@ -17,21 +18,33 @@ router.get('/activities/:username', async (req, res) => {
     }
 });
 
-// Crear una nueva actividad
-router.post('/activities', async (req, res) => {
+
+router.post('/activities/:id', async (req, res) => {
     try {
-        const { name, description, groups, members, roles, privacy } = req.body;
+        const { name, description, groups, members, privacy } = req.body;
+        const organizationId = req.params.id;
+        
+        const organization = await organizationModel.findById(organizationId);
+        if (!organization) {
+            return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
+        }
 
-        // Crea una nueva actividad
-        const newActivity = new activityModel({ name, description, groups, members, roles, privacy });
-        await newActivity.save();
+        const existingActivity = organization.activities.find(activity => activity.name === name);
+        if (existingActivity) {
+            return res.json({ status: 400, success: false, details: 'La actividad ya existe dentro de la organización' });
+        }
 
-        return res.status(201).json({ status: 201, success: true, details: 'Actividad creada correctamente', activity: newActivity });
+        const newActivity = new activityModel({ name, description, groups, members, privacy });
+        organization.activities.push(newActivity);
+        await organization.save();
+
+        return res.json({ status: 200, success: true, details: 'Actividad creada correctamente', activity: newActivity });
     } catch (error) {
         console.error('Error al crear la actividad:', error);
-        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
+        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
+
 
 // Actualizar una actividad existente
 router.put('/activities/:id', async (req, res) => {

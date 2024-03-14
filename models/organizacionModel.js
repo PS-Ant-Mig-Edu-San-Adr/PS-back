@@ -24,7 +24,7 @@ const organizationSchema = new Schema(
             domain: { type: String, required: false },
             organizations: { type: Array, required: false },
             privacy: { type: String, enum: privacyEnum, default: "Público", required: true },
-            activities: [{ type: Schema.Types.ObjectId, ref: 'activity' }]
+            activities: [activityModel.schema],
 
     },
     { collection: "organizations", id: true}
