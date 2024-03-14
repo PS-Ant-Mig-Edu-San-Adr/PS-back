@@ -39,11 +39,40 @@ router.post('/organizaciones/:username', async (req, res) => {
 });
 
 
+// Endpoint para obtener organizaciones por username
+router.get('/organizaciones/:username', async (req, res) => {
+    try {
+        const { username } = req.params;
+        // Encuentra el usuario por username para obtener su ID
+        const user = await userModel.findOne({ username: username });
+
+        if (!user) {
+            return res.status(404).json({ success: false, details: 'Usuario no encontrado' });
+        }
+
+        // Encuentra todas las organizaciones donde el usuario es miembro y tiene rol de admin
+        const organizations = await organizationModel.find({
+            'members': {
+                $elemMatch: { '_id': user._id, 'role': 'admin' }
+            }
+        });
+
+        if (!organizations || organizations.length === 0) {
+            return res.status(404).json({ success: false, details: 'No se encontraron organizaciones para este usuario' });
+        }
+
+        return res.json({ success: true, organizations: organizations });
+    } catch (error) {
+        console.error('Error al buscar las organizaciones:', error);
+        return res.status(500).json({ success: false, details: 'Error interno del servidor' });
+    }
+});
+
 router.get('/organizaciones/:id', async (req, res) => {
     try {
         const { id } = req.params;
 
-        const organizacion = await organizacionModel.findById(id);
+        const organizacion = await organizationModel.findById(id);
 
         if (!organizacion) {
             return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
