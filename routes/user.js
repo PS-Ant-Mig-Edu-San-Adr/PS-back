@@ -150,4 +150,28 @@ router.put("/userNotificactions/:username", async (req, res) => {
     }
 });
 
+router.get("/filterUser/:query", async (req, res) => {
+    try {
+        const { query } = req.params;
+
+        const users = await userModel.find({
+            $or: [
+                { username: { $regex: '^' + query, $options: 'i' } },
+                { fullname: { $regex: '^' + query, $options: 'i' } },
+                { email: { $regex: '^' + query, $options: 'i' } }
+            ]
+        });
+
+        if (!users || users.length === 0) {
+            return res.json({ status: 404, success: false, details: 'No se encontraron usuarios' });
+        } 
+
+        return res.json({ status: 200, success: true, details: 'Usuarios encontrados correctamente', users });
+        
+    } catch (error) {
+        console.error('Error al buscar usuarios:', error);
+        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+});
+
 module.exports = router;
