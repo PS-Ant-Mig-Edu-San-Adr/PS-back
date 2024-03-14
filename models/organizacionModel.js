@@ -8,7 +8,10 @@ const role = ["admin", "member"];
 
 const member = new Schema({
     _id: mongoose.Types.ObjectId,
-    role: { type: String, enum: role, required: true }
+    role: { type: String, enum: role, required: true },
+    email: { type: String, required: true },
+    name: { type: String, required: true },
+    username: { type: String, required: true }
 });
 
 const organizationSchema = new Schema(

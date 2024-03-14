@@ -25,7 +25,7 @@ router.post('/organizaciones/:username', async (req, res) => {
             contact: contact,
             email: email,
             privacy: privacy,
-            members: [{ _id: user._id, role: "admin" }],
+            members: [{ _id: user._id, role: "admin", email: user.email, name: user.fullName, username: user.username }],
             domain: domain
         });
 
@@ -92,6 +92,8 @@ router.put('/organizaciones/:id' , async (req, res) => {
             contact, email, domain, organizations, privacy } = req.body;
 
         const updatedOrganizacion= await organizationModel.findById(id);
+
+        console.log(req.body)
 
         if (!updatedOrganizacion) {
             return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
