@@ -5,7 +5,8 @@ const { Schema } = mongoose;
 const timeSchema = new Schema(
     {
         startTime: { type: Date, required: true },
-        endTime: { type: Date, required: true }
+        endTime: { type: Date, required: true },
+        day: { type: String, required: true }
     }
 );
 
