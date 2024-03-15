@@ -11,6 +11,7 @@ const activitySchema = new Schema(
             members: { type: Array, required: true },
             roles: { type: Array, required: true },
             privacy: { type: String, enum: privacyEnum, required: true },
+            
     },
     { collection: "activities", id: true}
 );

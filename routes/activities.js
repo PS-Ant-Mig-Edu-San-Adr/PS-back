@@ -25,6 +25,7 @@ router.post('/activities', async (req, res) => {
         // Crea una nueva actividad
         const newActivity = new activityModel({ name, description, groups, members, roles, privacy });
         await newActivity.save();
+        console.log("xd");
 
         return res.status(201).json({ status: 201, success: true, details: 'Actividad creada correctamente', activity: newActivity });
     } catch (error) {
