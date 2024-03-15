@@ -48,12 +48,12 @@ router.put("/user/:username", async (req, res) => {
     }
 });
 
-router.delete("/user/:username", async (req, res) => {
+router.delete("/deleteUser/:username", async (req, res) => {
     const username = req.params.username;
 
     try {
         // Buscar al usuario por su nombre de usuario
-        const user = await userModel.findOne({ username });
+        const user = await userModel.findOne({ username: username });
 
         if (!user) {
             return res.status(404).json({
@@ -63,11 +63,12 @@ router.delete("/user/:username", async (req, res) => {
         }
 
         // Eliminar al usuario de la base de datos
-        await user.remove();
+        await user.deleteOne();
 
         res.status(200).json({
             success: true,
-            details: "Usuario eliminado correctamente"
+            details: "Usuario eliminado correctamente",
+            status: 200
         });
     } catch (error) {
         console.error(error);

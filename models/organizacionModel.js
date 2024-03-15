@@ -8,7 +8,10 @@ const role = ["admin", "member"];
 
 const member = new Schema({
     _id: mongoose.Types.ObjectId,
-    role: { type: String, enum: role, required: true }
+    role: { type: String, enum: role, required: true },
+    email: { type: String, required: true },
+    name: { type: String, required: true },
+    username: { type: String, required: true }
 });
 
 const organizationSchema = new Schema(
@@ -21,7 +24,7 @@ const organizationSchema = new Schema(
             domain: { type: String, required: false },
             organizations: { type: Array, required: false },
             privacy: { type: String, enum: privacyEnum, default: "Público", required: true },
-            activities: [{ type: Schema.Types.ObjectId, ref: 'activity' }]
+            activities: [activityModel.schema],
 
     },
     { collection: "organizations", id: true}
