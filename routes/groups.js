@@ -3,6 +3,7 @@ const router = express.Router();
 const activityModel = require('../models/activityModel');
 const organizationModel = require('../models/organizacionModel');
 const groupModel = require('../models/grupoModel');
+const scheduleModel = require('../models/horarioModel');
 
 router.post('/groups/:organizationId/:activityId', async (req, res) => {
     try {
@@ -89,9 +90,10 @@ router.delete('/groups', async(req, res) => {
     }
 })
 
-router.put('/groups', async (req, res) => {
+router.put('/groups/:organizationId/:activityId/:groupId', async (req, res) => {
     try {
-        const { name, description, members, events, privacy, schedules, organizationId, activityId } = req.body;
+        const { name, description, members, events, privacy, schedules } = req.body;
+        const { organizationId, activityId, groupId } = req.params;
 
         const organization = await organizationModel.findById(organizationId);
         if (!organization) {
@@ -100,19 +102,51 @@ router.put('/groups', async (req, res) => {
 
         const activity = organization.activities.find(activity => activity._id == activityId);
         if (!activity) {
-            return res.json({ status: 404, success: false, details: 'Actividad no encontrada' });
+            return res.json({ status: 405, success: false, details: 'Actividad no encontrada' });
         }
 
-        const existingGroup = activity.groups.findAndUpdate(group => group.name === name, { name, description, members, events, privacy, schedules }, {new:true});
-        if (existingGroup) {
-            return res.json({ status: 400, success: false, details: 'El grupo ya existe dentro de la actividad' });
+        const updatedGroupIndex = activity.groups.findIndex(group => group._id.toString() === groupId);
+
+        if (updatedGroupIndex === -1) {
+            return res.json({ status: 407, success: false, details: 'Grupo no encontrado' });
+        }
+        
+        const processSchedules = (schedules) => {
+            return schedules.map(schedule => {
+                const startTime = new Date(`1970-01-01T${schedule.startTime}`);
+                const endTime = new Date(`1970-01-01T${schedule.endTime}`);
+                const day = schedule.day;
+                return { startTime, endTime, day };
+            });
+        };
+
+        const updatedGroup = activity.groups[updatedGroupIndex];
+
+
+        if (name) updatedGroup.name = name;
+        if (description) updatedGroup.description = description;
+        if (members) updatedGroup.members = members;
+        if (events) updatedGroup.events = events;
+        if (privacy) updatedGroup.privacy = privacy;
+        if (schedules && schedules.length > 0) {
+            const createdSchedules = await processSchedules(schedules);
+            updatedGroup.schedules = createdSchedules;
         }
 
-        return res.json({ status: 200, success: true, details: 'Grupo actualizada correctamente'});
+        
+
+        activity.groups[updatedGroupIndex] = updatedGroup;
+
+        
+
+        await organization.save();
+
+        return res.json({ status: 200, success: true, details: 'Grupo modificado correctamente', group: updatedGroup, organization });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
+
 
 
 module.exports = router;
