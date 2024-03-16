@@ -107,13 +107,28 @@ router.post('/activities/:id', async (req, res) => {
 
 
 // Actualizar una actividad existente
-router.put('/activities/:id', async (req, res) => {
+router.put('/activities/:organizationsId/:activityId', async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name, description, groups, members, roles, privacy } = req.body;
+        const { organizationsId, activityId } = req.params;
+        const { name, description, groups, members, privacy } = req.body;
 
-        // Busca y actualiza la actividad por su ID
-        const updatedActivity = await activityModel.findByIdAndUpdate(id, { name, description, groups, members, roles, privacy }, { new: true });
+        const organization = await organizationModel.findById(organizationsId);
+
+        // Busca la actividad por su ID
+        const updatedActivity = organization.activities.find(activity => activity._id.toString() === activityId);
+
+        if (!updatedActivity) {
+            return res.status(404).json({ status: 404, success: false, details: 'Actividad no encontrada' });
+        }
+
+        // Actualiza las propiedades de la actividad si se proporcionan en el cuerpo de la solicitud
+        if (name) updatedActivity.name = name;
+        if (description) updatedActivity.description = description;
+        if (groups) updatedActivity.groups = groups;
+        if (members) updatedActivity.members = members;
+        if (privacy) updatedActivity.privacy = privacy;
+
+        await organization.save(); // Guarda la organización actualizada
 
         return res.json({ status: 200, success: true, details: 'Actividad actualizada correctamente', activity: updatedActivity });
     } catch (error) {

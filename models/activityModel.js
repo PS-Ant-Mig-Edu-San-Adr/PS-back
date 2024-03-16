@@ -19,7 +19,7 @@ const activitySchema = new Schema(
             description: { type: String, required: true },
             groups: { type: Array, required: false, default: []},
             members: { type: [member], required: true },
-            privacy: { type: String, enum: privacyEnum, required: true },
+            privacy: { type: String, enum: privacyEnum, required: true },      
     },
     { collection: "activities", id: true}
 );

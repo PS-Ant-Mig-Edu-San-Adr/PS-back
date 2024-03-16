@@ -120,6 +120,7 @@ router.get('/organizaciones/byId/:id', async (req, res) => {
     }
 });
 
+
 router.put('/organizaciones/:id' , async (req, res) => {
     try {
         const { id } = req.params;
