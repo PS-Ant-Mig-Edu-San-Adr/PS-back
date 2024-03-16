@@ -29,6 +29,7 @@ const secretKey = require('./routes/secretKey');
 const organizaciones =  require('./routes/organizations.js');
 const user = require('./routes/user.js');
 const activities = require('./routes/activities.js');
+const groups = require('./routes/groups.js');
 
 
 // Ruta al endpoint de la API
@@ -40,6 +41,7 @@ app.use("/api/", recordatorios);
 app.use("/api/", organizaciones);
 app.use("/api/", user);
 app.use("/api/", activities);
+app.use("/api/", groups);
 
 
 app.get("/", (req, res) => {

@@ -4,9 +4,11 @@ const activityModel = require('../models/activityModel');
 const organizationModel = require('../models/organizacionModel');
 const groupModel = require('../models/grupoModel');
 
-router.post('/groups', async (req, res) => {
+router.post('/groups/:organizationId/:activityId', async (req, res) => {
     try {
-        const { name, description, members, events, privacy, schedules, organizationId, activityId } = req.body;
+        const { name, description, members, events, privacy, schedules } = req.body;
+        const { organizationId, activityId } = req.params;
+
 
         const organization = await organizationModel.findById(organizationId);
         if (!organization) {
@@ -24,8 +26,9 @@ router.post('/groups', async (req, res) => {
         }
 
         const newGroup = new groupModel({ name, description, members, events, privacy, schedules });
-        const savedGroup = await newGroup.save();
-        return res.json({ status: 200, success: true, details: 'Grupo obtenidas correctamente',  group: savedGroup});
+        activity.groups.push(newGroup);
+        await organization.save();
+        return res.json({ status: 200, success: true, details: 'Grupo obtenidas correctamente',  group: newGroup });
     } catch (error) {
         return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
