@@ -85,21 +85,6 @@ router.get('/organizaciones/:id', async (req, res) => {
     }
 });
 
-router.get('/organizaciones', async (req, res) => {
-    try {
-        const organizaciones = await organizationModel.find(); // Consulta para obtener todas las organizaciones
-
-        if (!organizaciones || organizaciones.length === 0) {
-            return res.json({ status: 404, success: false, details: 'No se encontraron organizaciones' });
-        } 
-
-        return res.json({ status: 200, success: true, details: 'Organizaciones encontradas correctamente', organizaciones });
-    } catch (error) {
-        console.error('Error al encontrar las organizaciones:', error);
-        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
-    }
-});
-
 
 router.put('/organizaciones/:id' , async (req, res) => {
     try {
