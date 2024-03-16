@@ -16,7 +16,7 @@ router.post("/login", async (req, res) => {
 
         if (user && user.passwordHash === hashedPassword) {
             // Generar un token JWT
-            const token = jwt.sign({ email: user.email }, secretKey, { expiresIn: '10s' });
+            const token = jwt.sign({ email: user.email, username: user.username }, secretKey, { expiresIn: '10s' });
 
             res.json({
                 user: user,

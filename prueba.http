@@ -33,3 +33,6 @@ GET http://localhost:3001/api/actividades/usuario1 HTTP/1.1
 
 ###
 GET http://localhost:3001/api/organizaciones/antapagon101 HTTP/1.1
+
+###
+GET http://localhost:3001/api/organizaciones/byName/ULPGC HTTP/1.1

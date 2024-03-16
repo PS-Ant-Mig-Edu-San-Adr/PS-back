@@ -38,6 +38,22 @@ router.post('/organizaciones/:username', async (req, res) => {
     }
 });
 
+router.get('/organizaciones', async (req, res) => {
+    try {
+        const organizations = await organizationModel.find();
+
+        console.log("Organizations: ", organizations);
+
+        if (!organizations || organizations.length === 0) {
+            return res.json({ status: 404, success: false, details: 'No se encontraron organizaciones' });
+        }
+
+        return res.json({ status: 200, success: true, details: 'Organizaciones encontradas correctamente', organizations });
+    } catch (error) {
+        console.error('Error al encontrar las organizaciones:', error);
+        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+});
 
 // Endpoint para obtener organizaciones por username
 router.get('/organizaciones/:username', async (req, res) => {
@@ -68,17 +84,36 @@ router.get('/organizaciones/:username', async (req, res) => {
     }
 });
 
-router.get('/organizaciones/:id', async (req, res) => {
+router.get('/organizaciones/byName/:name', async (req, res) => {
+    try {
+        console.log("Received: ", req)
+        const { name } = req.params;
+
+        const organizations = await organizationModel.find({ name: { $regex: new RegExp(name, 'i') } });
+
+        if (!organizations || organizations.length === 0) {
+            return res.json({ status: 404, success: false, details: 'Organizaciones no encontradas' });
+        }
+
+        return res.json({ status: 200, success: true, details: 'Organizaciones encontradas correctamente', organizations });
+    } catch (error) {
+        console.error('Error al encontrar las organizaciones:', error);
+        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+});
+
+
+router.get('/organizaciones/byId/:id', async (req, res) => {
     try {
         const { id } = req.params;
 
-        const organizacion = await organizationModel.findById(id);
+        const organization = await organizationModel.findById(id);
 
-        if (!organizacion) {
+        if (!organization) {
             return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
         } 
 
-        return res.json({ status: 200, success: true, details: 'Organizacion encontrada correctamente', organizacion });
+        return res.json({ status: 200, success: true, details: 'Organizacion encontrada correctamente', organizacion: organization });
     } catch (error) {
         console.error('Error al encontrar la  organizacion:', error);
         return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
