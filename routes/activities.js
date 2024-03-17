@@ -133,8 +133,17 @@ router.put('/activities/:organizationsId/:activityId', async (req, res) => {
             // Recorrer los grupos actualizados de la actividad
             updatedActivity.groups.forEach(group => {
                 // Filtrar los miembros 'admin' que no están en el grupo y agregarlos
-                const adminMembersToAdd = adminMembers.filter(adminMember => !group.members.some(member => member._id === adminMember._id));
-                group.members.push(...adminMembersToAdd);
+                adminMembers.forEach(adminMember => {
+                    if (group.members.some(member => member._id.toString() === adminMember._id.toString())) {
+                        group.members.forEach(member => {
+                            if (member._id.toString() === adminMember._id.toString()) {
+                                member.role = adminMember.role;
+                            }
+                        });
+                    } else {
+                        group.members.push(adminMember);
+                    }
+                });
             });
 
             // Agregar todos los miembros a la actividad
@@ -151,7 +160,7 @@ router.put('/activities/:organizationsId/:activityId', async (req, res) => {
 
         if (privacy) updatedActivity.privacy = privacy;
 
-        await organization.save(); // Guarda la organización actualizada
+        await organizationModel.findByIdAndUpdate(organization._id, organization);
 
         return res.json({ status: 200, success: true, details: 'Actividad actualizada correctamente', activity: updatedActivity });
     } catch (error) {
