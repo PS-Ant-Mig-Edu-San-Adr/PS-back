@@ -14,22 +14,30 @@ const findUserAndCalendar = async (username) => {
 router.get('/eventos/:username', async (req, res) => {
     try {
         const {username} = req.params;
-        const {user, calendar} = await findUserAndCalendar(username);
+        
+        const organizations = await organizationModel.find({ "members.username": username });
 
-        if (!user || !calendar) {
-            return res.json({
-                status: 404,
-                success: false,
-                details: !user ? 'Usuario no encontrado' : 'Calendario no encontrado para este usuario'
-            });
+        let allEvents = [];
+
+        for (const organization of organizations) {
+
+            for (const activity of organization.activities) {
+                const isMember = activity.members.some(member => member.username === username);
+                if (isMember) {
+                    for (const group of activity.groups) {
+                        const isMemberOfGroup = group.members.some(member => member.username === username);
+                        if (isMemberOfGroup) {
+                            allEvents = allEvents.concat(group.events);
+                        }
+                    }
+                }
+            }
         }
 
-        const events = calendar.events;
-
-        return res.json({status: 200, success: true, details: 'Eventos obtenidos correctamente', events});
+        return res.json({ status: 200, success: true, details: 'Eventos obtenidos correctamente', events: allEvents });
     } catch (error) {
         console.error('Error al obtener los eventos:', error);
-        return res.json({status: 500, success: false, details: 'Error interno del servidor'});
+        return res.json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
 
