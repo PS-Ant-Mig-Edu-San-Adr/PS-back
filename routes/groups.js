@@ -26,7 +26,17 @@ router.post('/groups/:organizationId/:activityId', async (req, res) => {
             return res.json({ status: 400, success: false, details: 'El grupo ya existe dentro de la actividad' });
         }
 
-        const newGroup = new groupModel({ name, description, members, events, privacy, schedules });
+        const newGroup = new groupModel({
+            parentOrganization: organizationId,
+            parentActivity: activityId,
+            name,
+            description,
+            members,
+            events,
+            privacy,
+            schedules
+        });
+
         activity.groups.push(newGroup);
         await organization.save();
         return res.json({ status: 200, success: true, details: 'Grupo obtenidas correctamente',  group: newGroup });

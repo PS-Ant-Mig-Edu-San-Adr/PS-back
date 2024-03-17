@@ -15,6 +15,7 @@ const member = new Schema({
 
 const activitySchema = new Schema(
     {
+            parentOrganization: { type: mongoose.Types.ObjectId, required: true },
             name: { type: String, required: true },
             description: { type: String, required: true },
             groups: { type: Array, required: false, default: []},

@@ -106,7 +106,7 @@ router.post('/activities/:id', async (req, res) => {
             }
         });
 
-        const newActivity = new activityModel({ name, description, groups, members: newActivityMembers, privacy });
+        const newActivity = new activityModel({parentOrganization: organizationId, name, description, groups, members: newActivityMembers, privacy });
 
         organization.activities.push(newActivity);
 
