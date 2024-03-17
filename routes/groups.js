@@ -125,7 +125,19 @@ router.put('/groups/:organizationId/:activityId/:groupId', async (req, res) => {
 
         if (name) updatedGroup.name = name;
         if (description) updatedGroup.description = description;
-        if (members) updatedGroup.members = members;
+        // Añade los miembros del grupo a la organización y a la actividad a la que pertenece el grupo
+        if (members){
+            updatedGroup.members = members;
+            members.forEach(member => {
+                if (!organization.members.some(orgMember => orgMember._id.toString() === member._id.toString())) {
+                    organization.members.push(member);
+                }
+                if (!activity.members.some(activityMember => activityMember._id.toString() === member._id.toString())) {
+                    activity.members.push(member);
+                }
+            });
+        }
+
         if (events) updatedGroup.events = events;
         if (privacy) updatedGroup.privacy = privacy;
         if (schedules && schedules.length > 0) {

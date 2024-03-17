@@ -127,12 +127,27 @@ router.put('/activities/:organizationsId/:activityId', async (req, res) => {
         if (groups) updatedActivity.groups = groups;
 
         if (members) {
+            // Filtrar los miembros que tienen el rol 'admin'
             const adminMembers = members.filter(member => member.role === 'admin');
+
+            // Recorrer los grupos actualizados de la actividad
             updatedActivity.groups.forEach(group => {
-                group.members.push(...adminMembers);
+                // Filtrar los miembros 'admin' que no están en el grupo y agregarlos
+                const adminMembersToAdd = adminMembers.filter(adminMember => !group.members.some(member => member._id === adminMember._id));
+                group.members.push(...adminMembersToAdd);
             });
+
+            // Agregar todos los miembros a la actividad
             updatedActivity.members = members;
+
+            // Agregar solo los miembros que no están en la organización
+            members.forEach(member => {
+                if (!organization.members.some(orgMember => orgMember._id.toString() === member._id.toString())) {
+                    organization.members.push(member);
+                }
+            });
         }
+
 
         if (privacy) updatedActivity.privacy = privacy;
 
