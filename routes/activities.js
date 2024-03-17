@@ -19,6 +19,66 @@ router.get('/activities/:username', async (req, res) => {
 });
 
 
+// Añadir un miembro a una actividad
+// Añadir un miembro a una actividad y a la organización si no existe
+router.post('/actividades/:id/addMember/:username', async (req, res) => {
+    try {
+        const { id, username } = req.params;
+        const  member = req.body;
+
+        console.log("Member: ", member, "Req:Body: ", req.body);
+
+        if (member === undefined) {
+            return res.json({ status: 400, success: false, details: 'Falta el miembro en el cuerpo de la solicitud' });
+        }
+
+        console.log("Member: ", req.body, "Id: ", id, "Username: ", username);
+        console.log("MEMBER---------------");
+        console.log(member);
+        // Encuentra la organización que contiene la actividad
+        const organization = await organizationModel.findOne({ "activities._id": id });
+        if (!organization) {
+            return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
+        }
+
+        // Encuentra la actividad dentro de la organización
+        const activity = organization.activities.find(activity => activity._id.toString() === id);
+        if (!activity) {
+            return res.json({ status: 404, success: false, details: 'Actividad no encontrada' });
+        }
+
+        // Verifica si el usuario ya es miembro de la actividad
+
+        const existingMember = activity.members.find(member => member.username === username);
+        if (existingMember) {
+            return res.json({ status: 400, success: false, details: 'El usuario ya es miembro de la actividad' });
+        }
+
+        console.log("Existing Member: ", existingMember);
+        console.log("Member: ", member);
+
+        // Agrega al nuevo miembro a la actividad
+        activity.members.push(member);
+
+        // Busca al usuario en la organización
+        const existingUser = organization.members.find(member => member.username === username);
+        if (!existingUser) {
+            // Si el usuario no existe en la organización, agrégalo como nuevo miembro
+            organization.members.push(member);
+        }
+
+        // Guarda los cambios en la organización
+        await organization.save();
+
+        return res.json({ status: 200, success: true, details: 'Miembro agregado correctamente a la actividad y a la organización', activity });
+    } catch (error) {
+        console.error('Error al agregar el miembro a la actividad y a la organización:', error);
+        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+});
+
+
+
 router.post('/activities/:id', async (req, res) => {
     try {
         const { name, description, groups, members, privacy } = req.body;
@@ -96,6 +156,43 @@ router.delete('/actividades/:id', async (req, res) => {
         return res.json({ status: 200, success: true, details: 'Actividad eliminada correctamente' });
     } catch (error) {
         console.error('Error al eliminar la actividad:', error);
+        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+});
+
+
+// Eliminar un miembro de una actividad
+router.delete('/actividades/:id/removeMember/:username', async (req, res) => {
+    try {
+        const { id, username } = req.params;
+
+        // Encuentra la organización que contiene la actividad
+        const organization = await organizationModel.findOne({ "activities._id": id });
+        if (!organization) {
+            return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
+        }
+
+        // Encuentra la actividad dentro de la organización
+        const activity = organization.activities.find(activity => activity._id.toString() === id);
+        if (!activity) {
+            return res.json({ status: 404, success: false, details: 'Actividad no encontrada' });
+        }
+
+        // Verifica si el usuario es miembro de la actividad
+        const existingMemberIndex = activity.members.findIndex(member => member.username === username);
+        if (existingMemberIndex === -1) {
+            return res.json({ status: 400, success: false, details: 'El usuario no es miembro de la actividad' });
+        }
+
+        // Elimina al miembro de la actividad
+        activity.members.splice(existingMemberIndex, 1);
+
+        // Guarda los cambios en la organización
+        await organization.save();
+
+        return res.json({ status: 200, success: true, details: 'Miembro eliminado correctamente de la actividad', activity });
+    } catch (error) {
+        console.error('Error al eliminar el miembro de la actividad:', error);
         return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
