@@ -90,11 +90,10 @@ router.put('/organizaciones/:id' , async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, members, roles, 
-            contact, email, domain, organizations, privacy } = req.body;
+            contact, email, domain, organizations, privacy,
+            activityId, groupId } = req.body;
 
-        const updatedOrganizacion= await organizationModel.findById(id);
-
-        console.log(req.body)
+        const updatedOrganizacion = await organizationModel.findById(id);
 
         if (!updatedOrganizacion) {
             return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
@@ -106,8 +105,29 @@ router.put('/organizaciones/:id' , async (req, res) => {
         if(email) updatedOrganizacion.email = email;
         if(domain) updatedOrganizacion.domain = domain;
         if(privacy) updatedOrganizacion.privacy = privacy;
-        if(members) updatedOrganizacion.members = members;
-        if(roles) updatedOrganizacion.roles = roles;
+
+        if (members) {
+            const adminMembers = members.filter(member => member.role === 'admin');
+            updatedOrganizacion.activities.forEach(activity => {
+                activity.groups.forEach(group => {
+                    adminMembers.forEach(adminMember => {
+                        if (!group.members.some(member => member._id === adminMember._id)) {
+                            group.members.push(adminMember);
+                        }
+                    });
+                });
+                adminMembers.forEach(adminMember => {
+                    if (!activity.members.some(member => member._id === adminMember._id)) {
+                        activity.members.push(adminMember);
+                    }
+                });
+            });
+            updatedOrganizacion.members = members;
+        }
+        
+
+        console.log(updatedOrganizacion)
+        
         if(organizations) updatedOrganizacion.organizations = organizations;
 
         await updatedOrganizacion.save();
@@ -118,6 +138,7 @@ router.put('/organizaciones/:id' , async (req, res) => {
         return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
+
 
 
 router.delete('/organizaciones/:id', async (req, res) => {

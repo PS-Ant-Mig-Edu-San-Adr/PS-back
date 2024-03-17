@@ -65,7 +65,15 @@ router.put('/activities/:organizationsId/:activityId', async (req, res) => {
         if (name) updatedActivity.name = name;
         if (description) updatedActivity.description = description;
         if (groups) updatedActivity.groups = groups;
-        if (members) updatedActivity.members = members;
+
+        if (members) {
+            const adminMembers = members.filter(member => member.role === 'admin');
+            updatedActivity.groups.forEach(group => {
+                group.members.push(...adminMembers);
+            });
+            updatedActivity.members = members;
+        }
+
         if (privacy) updatedActivity.privacy = privacy;
 
         await organization.save(); // Guarda la organización actualizada
