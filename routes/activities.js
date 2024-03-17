@@ -7,16 +7,40 @@ const organizationModel = require('../models/organizacionModel');
 router.get('/activities/:username', async (req, res) => {
     try {
         const { username } = req.params;
+        console.log("Username: ", username);
 
-        // Encuentra todas las actividades asociadas al usuario
-        const activities = await activityModel.find({ members: username });
+        // Buscar todas las organizaciones que tienen actividades
+        const organizations = await organizationModel.find({ 'activities': { $exists: true, $ne: [] } });
 
-        return res.json({ status: 200, success: true, details: 'Actividades obtenidas correctamente', activities });
+        // Array para almacenar las actividades que coinciden con el nombre de usuario
+        let activities = [];
+
+        // Iterar sobre todas las organizaciones
+        for (const organization of organizations) {
+            // Iterar sobre las actividades de cada organización
+            for (const activity of organization.activities) {
+                // Verificar si la actividad tiene al menos un miembro con el nombre de usuario especificado
+                const memberExists = activity.members.some(member => member.username === username);
+                if (memberExists) {
+                    // Si existe, agregar la actividad al array de actividades
+                    activities.push(activity);
+                }
+            }
+        }
+
+
+        // Verificar si se encontraron actividades
+        if (activities.length === 0) {
+            return res.json({ status: 404, success: false, details: 'No se encontraron actividades para el usuario especificado', activities });
+        } else {
+            return res.json({ status: 200, success: true, details: 'Actividades obtenidas correctamente', activities });
+        }
     } catch (error) {
         console.error('Error al obtener las actividades:', error);
         return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
 });
+
 
 
 // Añadir un miembro a una actividad

@@ -26,6 +26,25 @@ router.post('/groups/:organizationId/:activityId', async (req, res) => {
             return res.json({ status: 400, success: false, details: 'El grupo ya existe dentro de la actividad' });
         }
 
+        console.log("Members: ", members);
+
+        // Añade los admins de la organización al nuevo grupo en caso de que no esten
+        const adminsOrganization = organization.members.filter(member => member.role === 'admin');
+        adminsOrganization.forEach(admin => {
+            if (!members.some(newMember => newMember._id.toString() === admin._id.toString())) {
+                members.push(admin);
+            }
+        });
+
+
+        // Añade los admins de la actividad al nuevo grupo en caso de que no estén
+        let adminsActivity = activity.members.filter(member => member.role === 'admin');
+        adminsActivity.forEach(member => {
+            if (!members.some(newMember => newMember._id.toString() === member._id.toString())) {
+                members.push(member);
+            }
+        });
+
         const newGroup = new groupModel({
             parentOrganization: organizationId,
             parentActivity: activityId,
@@ -36,6 +55,8 @@ router.post('/groups/:organizationId/:activityId', async (req, res) => {
             privacy,
             schedules
         });
+
+        console.log("NewGroup: ", newGroup);
 
         activity.groups.push(newGroup);
         await organization.save();
