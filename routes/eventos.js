@@ -46,17 +46,19 @@ router.post('/eventos/grupo/:groupId', async (req, res) => {
         const { groupId } = req.params;
         const eventData = req.body;
 
+        const newEvent = new eventModel(eventData);
+
         // Obtener todas las organizaciones
         const organizations = await organizationModel.find();
 
         // Recorrer todas las organizaciones en busca del grupo
-        for (const [organizationIndex, organization] of organizations.entries()) {
+        for (const [_, organization] of organizations.entries()) {
             // Recorrer todas las actividades en busca del grupo
             for (const [activityIndex, activity] of organization.activities.entries()) {
                 // Buscar el grupo por su ID dentro de la actividad
                 const groupIndex = activity.groups.findIndex(group => group._id.toString() === groupId);
                 if (groupIndex !== -1) {
-                    organization.activities[activityIndex].groups[groupIndex].events.push(eventData);
+                    organization.activities[activityIndex].groups[groupIndex].events.push(newEvent);
                     await organizationModel.findByIdAndUpdate(organization._id, organization);
                     // Responder con un mensaje de éxito
                     return res.status(200).json({ success: true, message: 'Evento asociado con éxito al grupo.' });

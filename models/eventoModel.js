@@ -16,8 +16,8 @@ const eventSchema = new Schema(
         notes: { type: String, required: false },
         status: { type: String, enum: StatusEnum, required: true, default: 'Activo' },
         attachments: { type: String, required: false },
-        group: { type: Number, required: true },
-        color: { type: String, required: true }
+        group: { type: String, required: false },
+        color: { type: String, required: true, default: 'red'}
     },
     { collection: "events", timestamps: true, id: true}
 );
