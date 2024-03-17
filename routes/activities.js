@@ -85,6 +85,8 @@ router.post('/activities/:id', async (req, res) => {
         const organizationId = req.params.id;
         
         const organization = await organizationModel.findById(organizationId);
+        const organizationAdmins = organization.members.filter(member => member.role === 'admin');
+
         if (!organization) {
             return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
         }
@@ -94,8 +96,20 @@ router.post('/activities/:id', async (req, res) => {
             return res.json({ status: 400, success: false, details: 'La actividad ya existe dentro de la organización' });
         }
 
-        const newActivity = new activityModel({ name, description, groups, members, privacy });
+        // Agregar todos los adminMembers a newActivity
+        const newActivityMembers= organizationAdmins;
+
+        // Eliminar los duplicados de members
+        members.forEach(member => {
+            if (!newActivityMembers.some(admin => admin._id.toString() === member._id.toString())) {
+                newActivityMembers.push(member);
+            }
+        });
+
+        const newActivity = new activityModel({ name, description, groups, members: newActivityMembers, privacy });
+
         organization.activities.push(newActivity);
+
         await organization.save();
 
         return res.json({ status: 200, success: true, details: 'Actividad creada correctamente', activity: newActivity });
