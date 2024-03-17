@@ -10,8 +10,8 @@ const calendarSchema = new Schema(
     {
         userID: { type: Schema.Types.ObjectId, ref: "user", required: true },
         privacy: { type: String, enum: Object.values(PrivacyEnum), required: true },
-        events: { type: Array, required: false },
-        reminders: { type: Array, required: false }
+        events: { type: Array, required: true, default: []},
+        reminders: { type: Array, required: true, default: []}
     },
     { collection: "calendars", id: true }
 );

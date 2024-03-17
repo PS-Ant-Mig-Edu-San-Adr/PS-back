@@ -12,7 +12,7 @@ const eventSchema = new Schema(
         startDate: { type: Date, required: true },
         endDate: { type: Date, required: true },
         location: { type: String, required: false },
-        repeat: { type: String, enum: RepeatEnum, required: false, default: 'Ninguno'},
+        repeat: { type: String, enum: RepeatEnum, required: true, default: 'Ninguno'},
         notes: { type: String, required: false },
         status: { type: String, enum: StatusEnum, required: true, default: 'Activo' },
         attachments: { type: String, required: false },
