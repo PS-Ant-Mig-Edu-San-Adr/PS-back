@@ -3,6 +3,31 @@ const router = express.Router();
 const activityModel = require('../models/activityModel');
 const organizationModel = require('../models/organizacionModel');
 
+
+router.get('/activities/:organizationId/:activityId', async (req, res) => {
+    try {
+        const { organizationId, activityId } = req.params;
+
+        // Encuentra la organización por su ID
+        const organization = await organizationModel.findById(organizationId);
+        if (!organization) {
+            return res.json({ status: 404, success: false, details: 'Organización no encontrada' });
+        }
+
+        // Encuentra la actividad por su ID
+        const activity = organization.activities.find(activity => activity._id.toString() === activityId);
+        if (!activity) {
+            return res.json({ status: 404, success: false, details: 'Actividad no encontrada' });
+        }
+
+        return res.json({ status: 200, success: true, details: 'Actividad obtenida correctamente', activity });
+    } catch (error) {
+        console.error('Error al obtener la actividad:', error);
+        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+
+});
+
 // Obtener todas las actividades de un usuario
 router.get('/activities/:username', async (req, res) => {
     try {
@@ -20,9 +45,9 @@ router.get('/activities/:username', async (req, res) => {
             // Iterar sobre las actividades de cada organización
             for (const activity of organization.activities) {
                 // Verificar si la actividad tiene al menos un miembro con el nombre de usuario especificado
-                const memberExists = activity.members.some(member => member.username === username);
+                const memberExists = activity.members.some(member => member.username === username && member.role === 'admin');
                 if (memberExists) {
-                    // Si existe, agregar la actividad al array de actividades
+                    // Si existe y es admin, agregar la actividad al array de actividades
                     activities.push(activity);
                 }
             }

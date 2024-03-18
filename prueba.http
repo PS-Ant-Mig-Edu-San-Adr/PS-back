@@ -37,3 +37,6 @@ GET http://localhost:3001/api/organizaciones/65f4440b60a1c4088c176388 HTTP/1.1
 ###
 GET http://localhost:3001/api/eventos/antapagon101 HTTP/1.1
 
+###
+GET http://localhost:3001/api/groups/antapagon101 HTTP/1.1
+

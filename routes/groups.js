@@ -66,6 +66,45 @@ router.post('/groups/:organizationId/:activityId', async (req, res) => {
     }
 });
 
+router.get('/groups/:username', async (req, res) => {
+    try {
+        const { username } = req.params;
+        console.log("Username: ", username);
+
+        // Buscar todas las organizaciones que tienen actividades
+        const organizations = await organizationModel.find({ 'activities': { $exists: true, $ne: [] } });
+
+        // Array para almacenar los grupos que coinciden con el nombre de usuario
+        let groups = [];
+
+        // Iterar sobre todas las organizaciones
+        for (const organization of organizations) {
+            // Iterar sobre las actividades de cada organización
+            for (const activity of organization.activities) {
+                // Iterar sobre los grupos de cada actividad
+                for (const group of activity.groups) {
+                    // Verificar si el grupo tiene al menos un miembro con el nombre de usuario especificado
+                    const memberExists = group.members.some(member => member.username === username);
+                    if (memberExists) {
+                        // Si existe, agregar el grupo al array de grupos
+                        groups.push(group);
+                    }
+                }
+            }
+        }
+
+        if (groups.length === 0) {
+            return res.json({ status: 404, success: false, details: 'No se encontraron grupos para el usuario especificado' });
+        }
+
+        return res.json({ status: 200, success: true, details: 'Grupos obtenidos correctamente', groups });
+    } catch (error) {
+        console.error('Error al obtener los grupos:', error);
+        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
+    }
+});
+
+
 router.get('group', async (req, res) => {
     try{
         const { groupName, organizationId, activityId } = req.body;
