@@ -1,13 +1,21 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const { PrivacyEnum} = require('./common/enum');
+const {RoleEnum } = require('./common/enum');
 
 
-const Activity = sequelize.define('activity', {
+const OrganizationMembership = sequelize.define('organization_membership', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id'
+        }
     },
     organization_id: {
         type: DataTypes.INTEGER,
@@ -17,22 +25,13 @@ const Activity = sequelize.define('activity', {
             key: 'id'
         }
     },
-    name: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-    },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    privacy: {
-        type: DataTypes.ENUM(Object.values(PrivacyEnum)),
+    role: {
+        type: DataTypes.ENUM(Object.values(RoleEnum)),
         allowNull: false
     }
 }, {
-    tableName: 'activities',
+    tableName: 'organization_memberships',
     timestamps: false
 });
 
-
-module.exports = { Activity };
+module.exports = {OrganizationMembership};

@@ -1,42 +1,64 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+const { NotificationStatusEnum, TimeZoneEnum, PreferredLanguageEnum} = require('./common/enum');
 
-const TimeZone = {
-    GMT: "GMT",
-    EST: "EST",
-    PST: "PST",
-};
-
-const PreferredLanguage = {
-    Spanish: "Spanish",
-    English: "English",
-};
-
-// Enumerator for notification configuration
-const NotificationConfig = {
-    Enabled: "Enabled",
-    Disabled: "Disabled",
-    OnlyEvents: "OnlyEvents",
-    OnlyReminders: "OnlyReminders",
-};
-
-const userSchema = new Schema(
-    {
-        fullName: { type: String, required: true },
-        email: { type: String, required: true },
-        username: { type: String, required: true },
-        passwordHash: { type: String, required: true },
-        creationDate: { type: Date, required: false },
-        timeZone: { type: String, enum: Object.values(TimeZone), required: false },
-        preferredLanguage: { type: String, enum: Object.values(PreferredLanguage), required: false },
-        notificationSettings: { type: String, enum: Object.values(NotificationConfig), required: false },
-        avatar: { type: String, required: false, default: "https://hips.hearstapps.com/hmg-prod/images/captura-de-pantalla-2023-10-11-a-las-15-43-03-6526a6734d03a.jpg?crop=0.729xw:1.00xh;0.0795xw,0&resize=1200:*" },
-        calendar: { type: mongoose.Schema.Types.ObjectId, ref: 'calendarModel', required: true },
-        groups: { type: Array, required: false },
-        tags: { type: Array, required: false },
+const User = sequelize.define('users', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
-    { collection: "users", id: true }
-);
+    fullName: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    passwordHash: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        // FIXME: Comprobar estabilidad de la validación 
+        //validate: {
+          //  is: /^[0-9a-f]{64}$/i // Ejemplo de validación para un hash hexadecimal
+        //}
+    },
+    creationDate: {
+        type: DataTypes.DATE
+    },
+    timeZone: {
+        type: DataTypes.ENUM(Object.values(TimeZoneEnum)),
+        allowNull: false,
+        defaultValue: TimeZoneEnum.GMT
+    },
+    preferredLanguage: {
+        type: DataTypes.ENUM(Object.values(PreferredLanguageEnum)),
+        allowNull: false,
+        defaultValue: PreferredLanguageEnum.Spanish
+    },
+    notificationSettings: {
+        type: DataTypes.ENUM(Object.values(NotificationStatusEnum)),
+        allowNull: false,
+        defaultValue: NotificationStatusEnum.Enabled
+    },
+    avatar: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'https://hips.hearstapps.com/hmg-prod/images/captura-de-pantalla-2023-10-11-a-las-15-43-03-6526a6734d03a.jpg?crop=0.729xw:1.00xh;0.0795xw,0&resize=1200:*'
+    },
+    tags: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        allowNull: false,
+        defaultValue: []
+    }
+}, {
+    tableName: 'users',
+    timestamps: false
+});
 
-module.exports = mongoose.model("user", userSchema);
-
+module.exports = {User};

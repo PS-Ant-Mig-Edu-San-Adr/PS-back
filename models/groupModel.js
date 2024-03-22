@@ -3,11 +3,19 @@ const sequelize = require('../config/database');
 const { PrivacyEnum} = require('./common/enum');
 
 
-const Activity = sequelize.define('activity', {
+const Group = sequelize.define('group', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    activity_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'activities',
+            key: 'id'
+        }
     },
     organization_id: {
         type: DataTypes.INTEGER,
@@ -30,9 +38,9 @@ const Activity = sequelize.define('activity', {
         allowNull: false
     }
 }, {
-    tableName: 'activities',
+    tableName: 'groups',
     timestamps: false
 });
 
 
-module.exports = { Activity };
+module.exports = {Group};
