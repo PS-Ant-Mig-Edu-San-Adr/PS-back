@@ -31,9 +31,9 @@ router.post('/groups', async (req, res) => {
     }
 });
 
-router.get('group', async (req, res) => {
-    try{
-        const { groupName, organizationId, activityId } = req.body;
+router.get('/groups', async (req, res) => {
+    try {
+        const { organizationId, activityId, name } = req.query;
 
         const organization = await organizationModel.findById(organizationId);
         if (!organization) {
@@ -45,9 +45,9 @@ router.get('group', async (req, res) => {
             return res.json({ status: 404, success: false, details: 'Actividad no encontrada' });
         }
 
-        const existingGroup = activity.groups.find(group => group.name === groupName);
-        if (existingGroup) {
-            return res.json({ status: 400, success: false, details: 'El grupo ya existe dentro de la actividad' });
+        const existingGroup = activity.groups.find(group => group.name === name);
+        if (!existingGroup) {
+            return res.json({ status: 400, success: false, details: 'El grupo no existe dentro de la actividad' });
         }
 
         return res.json({ status: 200, success: true, details: 'Grupo obtenido correctamente', existingGroup });
@@ -55,12 +55,13 @@ router.get('group', async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
-})
+});
+
 
 
 router.delete('/groups', async(req, res) => {
     try {
-        const { nameGroup, organizationId, activityId } = req.body;
+        const { name, organizationId, activityId } = req.query;
 
         const organization = await organizationModel.findById(organizationId);
         if (!organization) {
@@ -72,7 +73,7 @@ router.delete('/groups', async(req, res) => {
             return res.json({ status: 404, success: false, details: 'Actividad no encontrada' });
         }
 
-        const existingGroup = activity.groups.find(group => group.name === nameGroup);
+        const existingGroup = activity.groups.find(group => group.name === name);
         if (!existingGroup) {
             return res.json({ status: 400, success: false, details: 'El grupo no existe dentro de la actividad' });
         }
