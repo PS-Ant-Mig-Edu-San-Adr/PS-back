@@ -15,11 +15,12 @@ const member = new Schema({
 
 const activitySchema = new Schema(
     {
+            parentOrganization: { type: mongoose.Types.ObjectId, required: true },
             name: { type: String, required: true },
             description: { type: String, required: true },
             groups: { type: Array, required: false, default: []},
             members: { type: [member], required: true },
-            privacy: { type: String, enum: privacyEnum, required: true },
+            privacy: { type: String, enum: privacyEnum, required: true },      
     },
     { collection: "activities", id: true}
 );

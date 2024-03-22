@@ -12,12 +12,12 @@ const eventSchema = new Schema(
         startDate: { type: Date, required: true },
         endDate: { type: Date, required: true },
         location: { type: String, required: false },
-        repeat: { type: String, enum: RepeatEnum, required: false, default: 'Ninguno'},
+        repeat: { type: String, enum: RepeatEnum, required: true, default: 'Ninguno'},
         notes: { type: String, required: false },
         status: { type: String, enum: StatusEnum, required: true, default: 'Activo' },
         attachments: { type: String, required: false },
-        group: { type: Number, required: true },
-        color: { type: String, required: true }
+        group: { type: String, required: false },
+        color: { type: String, required: true, default: 'red'}
     },
     { collection: "events", timestamps: true, id: true}
 );

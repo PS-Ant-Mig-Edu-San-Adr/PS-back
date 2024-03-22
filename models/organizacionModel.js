@@ -18,6 +18,7 @@ const organizationSchema = new Schema(
     {
             name: { type: String, required: true },
             description: { type: String, required: true },
+            imageUrl: { type: String, required: false },
             members: { type: [member], required: true },
             contact: { type: String, required: false },
             email: { type: String, required: false },

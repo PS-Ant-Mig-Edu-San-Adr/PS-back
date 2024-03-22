@@ -17,15 +17,24 @@ const member = new Schema({
 
 const groupSchema = new Schema(
     {
+        parentOrganization: { type: mongoose.Types.ObjectId, required: true },
+        parentActivity: { type: mongoose.Types.ObjectId, required: true },
         name: { type: String, required: true },
         description: { type: String, required: true },
         members: { type: [member], required: true, default: []},
         events: { type: Array, required: true, default: []},
         privacy: { type: String, enum: privacyEnum, required: true },
-        schedules: { type: [horarioModel.schema], required: true, default: []}
+        schedules: [
+            {
+                startTime: { type: Date, required: true },
+                endTime: { type: Date, required: true },
+                day: { type: String, required: true }
+            }
+        ]
     },
     { collection: "groups", id: true}
 );
+
 
 module.exports = mongoose.model("group", groupSchema);
 
