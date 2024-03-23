@@ -10,11 +10,7 @@ const Reminder = sequelize.define('reminder', {
     },
     user_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
+        allowNull: false
     },
 
     title: {
@@ -39,11 +35,12 @@ const Reminder = sequelize.define('reminder', {
     },
     color: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true,
+        defaultValue: '#00FF00'
     }
 }, {
     tableName: 'reminders',
     timestamps: false
 });
 
-module.exports = {Reminder};
+module.exports = { Reminder };

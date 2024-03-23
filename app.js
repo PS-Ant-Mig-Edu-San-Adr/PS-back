@@ -1,6 +1,7 @@
 const express = require('express');
 const sequelize = require('./config/database'); // Ajustado para importar Sequelize
 const routes = require('./routes');
+const setupAssociations = require('./models/common/associations');
 
 const app = express();
 const port = 3000;
@@ -12,6 +13,9 @@ sequelize.authenticate()
     .then(() => {
         console.log('Conectado a la base de datos con Sequelize');
         
+        // Establecer las asociaciones entre las tablas
+        setupAssociations();
+
         // Opcional: Sincroniza todos los modelos
         return sequelize.sync({ force: true }); // `force: true` para reiniciar las tablas
     })

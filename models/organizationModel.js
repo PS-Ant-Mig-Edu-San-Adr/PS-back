@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const { PrivacyEnum } = require('./common/enum');
 
-
 const Organization = sequelize.define('organizations', {
     id: {
         type: DataTypes.INTEGER,
@@ -11,11 +10,7 @@ const Organization = sequelize.define('organizations', {
     },
     parent_organization_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'organizations',
-            key: 'id'
-        }
+        allowNull: true
     },
     name: {
         type: DataTypes.STRING(255),
@@ -43,4 +38,4 @@ const Organization = sequelize.define('organizations', {
 });
 
 
-module.exports = { Organization }; // Asegúrate de exportar el modelo correctamente
+module.exports = { Organization };

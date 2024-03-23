@@ -11,10 +11,6 @@ const Event = sequelize.define('event', {
     group_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'groups',
-            key: 'id'
-        }
     },
     title: {
         type: DataTypes.STRING(255),
@@ -58,5 +54,6 @@ const Event = sequelize.define('event', {
     tableName: 'events',
     timestamps: false
 });
+
 
 module.exports = {Event};

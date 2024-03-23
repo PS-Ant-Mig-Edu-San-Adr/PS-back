@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const { PrivacyEnum} = require('./common/enum');
 
-
 const Activity = sequelize.define('activity', {
     id: {
         type: DataTypes.INTEGER,
@@ -12,10 +11,6 @@ const Activity = sequelize.define('activity', {
     organization_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'organizations',
-            key: 'id'
-        }
     },
     name: {
         type: DataTypes.STRING(255),

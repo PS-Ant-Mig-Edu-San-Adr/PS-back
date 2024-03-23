@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const {RoleEnum } = require('./common/enum');
 
-
 const OrganizationMembership = sequelize.define('organization_membership', {
     id: {
         type: DataTypes.INTEGER,
@@ -11,19 +10,11 @@ const OrganizationMembership = sequelize.define('organization_membership', {
     },
     user_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
+        allowNull: false
     },
     organization_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'organizations',
-            key: 'id'
-        }
+        allowNull: false
     },
     role: {
         type: DataTypes.ENUM(Object.values(RoleEnum)),
@@ -33,5 +24,6 @@ const OrganizationMembership = sequelize.define('organization_membership', {
     tableName: 'organization_memberships',
     timestamps: false
 });
+
 
 module.exports = {OrganizationMembership};

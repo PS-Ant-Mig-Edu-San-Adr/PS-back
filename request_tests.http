@@ -25,6 +25,18 @@ Content-Type: application/json
 }
 
 ### 
+POST http://localhost:3000/api/groups
+Content-Type: application/json
+
+{
+    "organization_id": 1,
+    "activity_id": 1, 
+    "name": "Nombre del grupo",
+    "description": "Descripción del grupo",
+    "privacy": "público"
+}
+
+### 
 POST http://localhost:3000/api/events
 Content-Type: application/json
 
@@ -41,8 +53,34 @@ Content-Type: application/json
     "color": "#FF0000"
 }
 
+### 
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "fullName": "Antonio Aparicio",
+    "email": "antonio@example.com",
+    "username": "antonioap101",
+    "passwordHash": "hashdecontraseña",
+    "timeZone": "GMT"        
+}
+
+###
+POST http://localhost:3000/api/reminders
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "event_id": 1,
+    "title": "Mi recordatorio 1",
+    "description": "Descripción del recordatorio",
+    "start_date": "2024-03-25T09:00:00Z",
+    "end_date": "2024-03-25T09:30:00Z",
+    "repeat": "Ninguno",
+    "color": "#00FF00"    
+}
 
 ### 
 DELETE http://localhost:3000/api/organizations/1
-Content-Type: application/json
+
 

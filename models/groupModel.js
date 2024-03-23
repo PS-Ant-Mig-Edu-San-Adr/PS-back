@@ -11,19 +11,11 @@ const Group = sequelize.define('group', {
     },
     activity_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'activities',
-            key: 'id'
-        }
+        allowNull: false
     },
     organization_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'organizations',
-            key: 'id'
-        }
+        allowNull: false
     },
     name: {
         type: DataTypes.STRING(255),
@@ -43,4 +35,4 @@ const Group = sequelize.define('group', {
 });
 
 
-module.exports = {Group};
+module.exports = { Group };
