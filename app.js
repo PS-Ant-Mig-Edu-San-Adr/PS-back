@@ -17,7 +17,7 @@ sequelize.authenticate()
         setupAssociations();
 
         // Opcional: Sincroniza todos los modelos
-        return sequelize.sync({ force: true }); // `force: true` para reiniciar las tablas
+        return sequelize.sync({ force: false }); // `force: true` para reiniciar las tablas
     })
     .then(() => {
         console.log('Modelos sincronizados con la base de datos');
