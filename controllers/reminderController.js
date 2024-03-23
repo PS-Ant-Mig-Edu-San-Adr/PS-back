@@ -6,9 +6,9 @@ const reminderController = {
             // Crear un nuevo recordatorio
             const reminder = await Reminder.create(req.body);
 
-            res.status(201).json({success: true, details: reminder});
+            res.status(201).json({success: true, result: reminder, details: 'Recordatorio creado correctamente'});
         } catch (error) {
-            res.status(400).json({success: false, details: error.message});
+            res.status(400).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -16,13 +16,13 @@ const reminderController = {
         try {
             const reminders = await Reminder.findAll();
             if (reminders.length <= 0) {
-                return res.status(404).json({success: false, details: 'No se encontraron recordatorios'});
+                return res.status(404).json({success: false, result: undefined, details: 'No se encontraron recordatorios'});
             }
 
-            res.json({success: true, details: reminders});
+            res.json({success: true, result: reminders, details: 'Recordatorios encontrados'});
 
         } catch (error) {
-            res.status(500).json({success: false, details: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -30,12 +30,12 @@ const reminderController = {
         try {
             const reminder = await Reminder.findByPk(req.params.id);
             if (!reminder) {
-                return res.status(404).json({success: false, details: 'Recordatorio no encontrado'});
+                return res.status(404).json({success: false, result: undefined, details: 'Recordatorio no encontrado'});
             }
-            res.json({success: true, details: reminder});
+            res.json({success: true, result: reminder, details: "Recordatorio encontrado"});
 
         } catch (error) {
-            res.status(500).json({success: false, details: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -43,13 +43,13 @@ const reminderController = {
         try {
             const reminder = await Reminder.findByPk(req.params.id);
             if (!reminder) {
-                return res.status(404).json({details: 'Recordatorio no encontrado'});
+                return res.status(404).json({success: false, result: undefined, details: 'Recordatorio no encontrado'});
             }
             await reminder.update(req.body);
-            res.json({success: true, details: reminder});
+            res.json({success: true, result: reminder, details: 'Recordatorio actualizado'});
 
         } catch (error) {
-            res.status(500).json({success: false, details: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -57,14 +57,14 @@ const reminderController = {
         try {
             const reminder = await Reminder.findByPk(req.params.id);
             if (!reminder) {
-                return res.status(404).json({success: false, details: 'Recordatorio no encontrado'});
+                return res.status(404).json({success: false, result: undefined,  details: 'Recordatorio no encontrado'});
             }
 
             await reminder.destroy();
-            res.json({success: true, details: 'Recordatorio eliminado'});
+            res.json({success: true, result: undefined, details: 'Recordatorio eliminado'});
 
         } catch (error) {
-            res.status(500).json({success: false, details: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     }
 };

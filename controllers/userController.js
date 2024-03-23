@@ -10,7 +10,7 @@ const userController = {
             // Verificar si el usuario ya existe en la base de datos
             const existingUser = await User.findOne({ where: { username: username } });
             if (existingUser) {
-                return res.status(400).json({ success: false, details: 'El nombre de usuario ya está en uso' });
+                return res.status(400).json({ success: false, result: undefined, details: 'El nombre de usuario ya está en uso' });
             }
 
             // `passwordHash` es la contraseña aún sin hashear
@@ -32,9 +32,9 @@ const userController = {
                 tags: req.body.tags
             });
 
-            res.status(201).json({success: true, details: user});
+            res.status(201).json({success: true, result: user, details: "Usuario creado exitosamente"});
         } catch (error) {
-            res.status(400).json({success: false, details: error.message});
+            res.status(400).json({success: false, result: undefined, details: error.message});
         }
     },
     loginUser: async (req, res) => {
@@ -54,13 +54,13 @@ const userController = {
             });
 
             if (!user) {
-                return res.status(404).json({success: false, details: 'Usuario o contraseña incorrectos'});
+                return res.status(404).json({success: false, result: undefined, details: 'Usuario o contraseña incorrectos'});
             }
 
-            res.status(201).json({success: true, details: user});
+            res.status(201).json({success: true, result: user, details: 'Inicio de sesión exitoso'});
 
         } catch (error) {
-            res.status(400).json({success: false, details: error.message});
+            res.status(400).json({success: false, result: undefined, details: error.message});
 
         }
     },
@@ -71,13 +71,13 @@ const userController = {
             const users = await User.findAll();
 
             if (users.length <= 0) {
-                return res.status(404).json({success: false, error: 'No se encontraron usuarios'});
+                return res.status(404).json({success: false, result: undefined, details: 'No se encontraron usuarios'});
             }
 
-            res.json({success: true, details: users});
+            res.json({success: true, result: users, details: 'Usuarios encontrados'});
 
         } catch (error) {
-            res.status(500).json({success: false, error: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -85,13 +85,13 @@ const userController = {
         try {
             const user = await User.findByPk(req.params.id);
             if (!user) {
-                return res.status(404).json({success: false, error: 'Usuario no encontrado'});
+                return res.status(404).json({success: false, result: undefined, details: 'Usuario no encontrado'});
             }
 
-            res.json({success: true, details: user});
+            res.json({success: true, result: user, details: 'Usuario encontrado'});
 
         } catch (error) {
-            res.status(500).json({success: false, error: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -102,13 +102,13 @@ const userController = {
                 where: {userId: req.params.userId}
             });
             if (reminders.length <= 0) {
-                return res.status(404).json({success: false, details: 'No se encontraron recordatorios para el usuario'});
+                return res.status(404).json({success: false, result: undefined, details: 'No se encontraron recordatorios para el usuario'});
             }
 
-            res.json({success: true, details: reminders});
+            res.json({success: true, result: reminders, details: 'Recordatorios encontrados'});
 
         } catch (error) {
-            res.status(500).json({success: false, details: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -116,13 +116,13 @@ const userController = {
         try {
             const user = await User.findByPk(req.params.id);
             if (!user) {
-                return res.status(404).json({success: false, error: 'Usuario no encontrado'});
+                return res.status(404).json({success: false, result: undefined,  details: 'Usuario no encontrado'});
             }
 
             await user.update(req.body);
-            res.json({success: true, details: user});
+            res.json({success: true, result: user, details: 'Usuario actualizado'});
         } catch (error) {
-            res.status(500).json({success: false, error: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     },
 
@@ -130,12 +130,12 @@ const userController = {
         try {
             const user = await User.findByPk(req.params.id);
             if (!user) {
-                return res.status(404).json({success: false, error: 'Usuario no encontrado'});
+                return res.status(404).json({success: false, result: undefined, details: 'Usuario no encontrado'});
             }
             await user.destroy();
-            res.json({success: true, message: 'Usuario eliminado'});
+            res.json({success: true, result: user, details: 'Usuario eliminado'});
         } catch (error) {
-            res.status(500).json({success: false, error: error.message});
+            res.status(500).json({success: false, result: undefined, details: error.message});
         }
     }
 };
