@@ -1,5 +1,6 @@
 const {User} = require('../models/userModel');
 const crypto = require("crypto");
+const {Reminder} = require("../models/reminderModel");
 
 const userController = {
     registerUser: async (req, res) => {
@@ -91,6 +92,23 @@ const userController = {
 
         } catch (error) {
             res.status(500).json({success: false, error: error.message});
+        }
+    },
+
+
+    getUserReminders: async (req, res) => {
+        try {
+            const reminders = await Reminder.findAll({
+                where: {userId: req.params.userId}
+            });
+            if (reminders.length <= 0) {
+                return res.status(404).json({success: false, details: 'No se encontraron recordatorios para el usuario'});
+            }
+
+            res.json({success: true, details: reminders});
+
+        } catch (error) {
+            res.status(500).json({success: false, details: error.message});
         }
     },
 

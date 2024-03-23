@@ -76,6 +76,7 @@ router.delete('/group-memberships/:id', groupMembershipController.deleteGroupMem
 // Usuarios
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
+router.get('/users/:id/reminders', userController.getUserReminders);
 router.post('/users/register', userController.registerUser);
 router.post('/users/login', userController.loginUser);
 router.put('/users/:id', userController.updateUser);
