@@ -1,13 +1,36 @@
 const { Activity } = require('../models/activityModel.js');
+const { Organization } = require('../models/organizationModel.js');
+const { ActivityMembership } = require('../models/activityMembershipModel.js');
+const { OrganizationMembership } = require('../models/organizationMembershipModel.js');
 
 
 const activityController = {
     createActivity: async (req, res) => {
         try {
-        const activity = await Activity.create(req.body);
-        res.status(201).json(activity);
+          const organizationId = req.params.id;
+    
+          const organization = await Organization.findByPk(organizationId);
+          if (!organization) {
+            return res.status(404).json({ success: false, details: 'Organización no encontrada' });
+          }
+    
+          const newActivity = await organization.createActivity({
+            name: req.body.name,
+            description: req.body.description,
+            privacy: req.body.privacy
+          });
+    
+          const organizationAdmins = await organization.getUsers({
+            through: { where: { role: 'admin' } }
+          });
+    
+          await Promise.all(organizationAdmins.map(async (admin) => {
+            await newActivity.addUser(admin, { through: { role: 'admin' } });
+          }));
+    
+          return res.status(200).json({ success: true, details: "Actividad creada correctamente", result: newActivity });
         } catch (error) {
-        res.status(400).json({ error: error.message });
+          return res.status(500).json({ success: false, details: error.message });
         }
     },
     
@@ -15,12 +38,12 @@ const activityController = {
         try {
         const activities = await Activity.findAll();
         if (activities.length > 0) {
-            res.json(activities);
+            return res.status(200).json({ success: true, result: activities, details: 'Actividades encontradas' });
         } else {
-            res.status(404).json({ error: 'No se encontraron actividades' });
+            return res.status(404).json({success: false, details: 'No se encontraron actividades'});
         }
         } catch (error) {
-        res.status(500).json({ error: error.message });
+            return res.status(500).json({ success: false, details: error.message });
         }
     },
     
@@ -28,12 +51,12 @@ const activityController = {
         try {
         const activity = await Activity.findByPk(req.params.id);
         if (activity) {
-            res.json(activity);
+            return res.status(200).json({ success: true, result: activity, details: 'Actividad encontrada' });
         } else {
-            res.status(404).json({ error: 'Actividad no encontrada' });
+            return res.status(404).json({ success: false, details: 'Actividad no encontrada' });
         }
         } catch (error) {
-        res.status(500).json({ error: error.message });
+            return res.status(500).json({ success: false, details: error.message });
         }
     },
     
@@ -42,12 +65,12 @@ const activityController = {
         const activity = await Activity.findByPk(req.params.id);
         if (activity) {
             await activity.update(req.body);
-            res.json(activity);
+            return res.status(200).json({ success: true, details: 'Actividad actualizada', result: activity });
         } else {
-            res.status(404).json({ error: 'Actividad no encontrada' });
+            return res.status(404).json({ success: false, details: 'Actividad no encontrada' });
         }
         } catch (error) {
-        res.status(500).json({ error: error.message });
+            return res.status(500).json({ success: false, details: error.message });
         }
     },
     
@@ -56,12 +79,12 @@ const activityController = {
         const activity = await Activity.findByPk(req.params.id);
         if (activity) {
             await activity.destroy();
-            res.json({ message: 'Actividad eliminada' });
+            return res.json({ success: true, details: 'Actividad eliminada' });
         } else {
-            res.status(404).json({ error: 'Actividad no encontrada' });
+            return res.status(404).json({ success: false, details: 'Actividad no encontrada' });
         }
         } catch (error) {
-        res.status(500).json({ error: error.message });
+            return res.status(500).json({ success: false, details: error.message });
         }
     }
 };

@@ -6,9 +6,9 @@ const organizationsController = {
   createOrganization: async (req, res) => {
     try {
       const organization = await Organization.create(req.body);
-      res.status(201).json(organization);
+      return res.status(200).json({ success: true, details: 'Organización creada correctamente', result: organization });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      return res.status(400).json({ success: false, details: error.message });
     }
   },
 
@@ -18,18 +18,16 @@ const organizationsController = {
     console.log("Enters");
     console.log("Organization: ", Organization)
     try {
-      console.log("Enters try");
 
       const organizations = await Organization.findAll();
-      console.log("Organizations: ", organizations)
 
       if (organizations.length > 0) {
-        res.json(organizations);
+        return res.status(200).json({ success: true, details: 'Organizaciones encontradas', result: organizations });
       } else {
-        res.status(404).json({ error: 'No se encontraron organizaciones' });
+        return res.status(404).json({ success: false, details: 'No se encontraron organizaciones' });
       }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        return res.status(500).json({ success: false, details: error.message });
     }
   },
 
@@ -39,12 +37,26 @@ const organizationsController = {
     try {
       const organization = await Organization.findByPk(req.params.id);
       if (organization) {
-        res.json(organization);
+        return res.status(200).json({ success: true, details: 'Organización encontrada', result: organization});
       } else {
-        res.status(404).json({ error: 'Organización no encontrada' });
+        return res.status(404).json({ success: false, details: 'Organización no encontrada' });
       }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        return res.status(500).json({ success: false, details: error.message });
+    }
+  },
+
+  getOrganizationActivities: async (req, res) => {
+    try {
+      const organization = await Organization.findByPk(req.params.id);
+      if (organization) {
+        const activities = await organization.getActivities();
+        return res.status(200).json({ status: 200, success: true, details: 'La organización no tiene actividades', activities });
+      } else {
+        return res.status(404).json({ status: 404, success: false, details: 'Organización no encontrada' });
+      }
+    } catch (error) {
+        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
     }
   },
 
@@ -54,12 +66,12 @@ const organizationsController = {
       const organization = await Organization.findByPk(req.params.id);
       if (organization) {
         await organization.update(req.body);
-        res.json(organization);
+        return res.status(200).json({ success: true, details: 'Organización actualizada', result: organization });
       } else {
-        res.status(404).json({ error: 'Organización no encontrada' });
+        return res.status(404).json({ success: false, details: 'Organización no encontrada' });
       }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        return res.status(500).json({ success: false, details: error.message });
     }
   },
 
@@ -68,13 +80,13 @@ const organizationsController = {
     try {
       const organization = await Organization.findByPk(req.params.id);
       if (organization) {
-        await organization.destroy();
-        res.status(204).send();
+        return await organization.destroy();
+        res.status(200).json({ success: true, details: 'Organización eliminada' });
       } else {
-        res.status(404).json({ error: 'Organización no encontrada' });
+        return res.status(404).json({ success: false, details: 'Organización no encontrada' });
       }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        return res.status(500).json({ success: false, details: error.message });
     }
   }
 };

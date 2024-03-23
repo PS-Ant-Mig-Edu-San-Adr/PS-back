@@ -16,6 +16,7 @@ const userController = require('./controllers/userController');
 // Organizaciones
 router.get('/organizations', organizationController.getAllOrganizations);
 router.get('/organizations/:id', organizationController.getOrganizationById);
+router.get('/organizations/:id/activities', organizationController.getOrganizationActivities);
 router.post('/organizations', organizationController.createOrganization);
 router.put('/organizations/:id', organizationController.updateOrganization);
 router.delete('/organizations/:id', organizationController.deleteOrganization);
@@ -24,7 +25,7 @@ router.delete('/organizations/:id', organizationController.deleteOrganization);
 // Actividades
 router.get('/activities', activityController.getAllActivities);
 router.get('/activities/:id', activityController.getActivityById);
-router.post('/activities', activityController.createActivity);
+router.post('/activities/:id', activityController.createActivity);
 router.put('/activities/:id', activityController.updateActivity);
 router.delete('/activities/:id', activityController.deleteActivity);
 
@@ -61,9 +62,9 @@ router.delete('/organization-memberships/:id', organizationMembershipController.
 // Membresías de actividad
 router.get('/activity-memberships', activityMembershipController.getAllActivityMemberships);
 router.get('/activity-memberships/:id', activityMembershipController.getActivityMembershipById);
-router.post('/activity-memberships', activityMembershipController.createActivityMembership);
-router.put('/activity-memberships/:id', activityMembershipController.updateActivityMembership);
-router.delete('/activity-memberships/:id', activityMembershipController.deleteActivityMembership);
+router.post('/activity-memberships/:activitiId/:userId', activityMembershipController.createActivityMembership);
+router.put('/activity-memberships/:activitiId/:userId', activityMembershipController.updateActivityMembership);
+router.delete('/activity-memberships/:activitiId/:userId', activityMembershipController.deleteActivityMembership);
 
 // Membresías de grupo
 router.get('/group-memberships', groupMembershipController.getAllGroupMemberships);
@@ -76,6 +77,7 @@ router.delete('/group-memberships/:id', groupMembershipController.deleteGroupMem
 // Usuarios
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
+router.get('/users/:id/activities', userController.getUserActivities);
 router.post('/users', userController.createUser);
 router.put('/users/:id', userController.updateUser);
 router.delete('/users/:id', userController.deleteUser);
