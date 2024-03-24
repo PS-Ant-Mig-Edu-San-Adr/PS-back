@@ -62,9 +62,9 @@ router.delete('/organization-memberships/:id', organizationMembershipController.
 // Membresías de actividad
 router.get('/activity-memberships', activityMembershipController.getAllActivityMemberships);
 router.get('/activity-memberships/:id', activityMembershipController.getActivityMembershipById);
-router.post('/activity-memberships/:activitiId/:userId', activityMembershipController.createActivityMembership);
-router.put('/activity-memberships/:activitiId/:userId', activityMembershipController.updateActivityMembership);
-router.delete('/activity-memberships/:activitiId/:userId', activityMembershipController.deleteActivityMembership);
+router.post('/activity-memberships/:activityId/:userId', activityMembershipController.createActivityMembership);
+router.put('/activity-memberships/:activityId/:userId', activityMembershipController.updateActivityMembership);
+router.delete('/activity-memberships/:activityId/:userId', activityMembershipController.deleteActivityMembership);
 
 // Membresías de grupo
 router.get('/group-memberships', groupMembershipController.getAllGroupMemberships);

@@ -28,3 +28,6 @@ Content-Type: application/json
 
 ###
 DELETE  http://localhost:3000/api/activities/2
+
+###
+POST http://localhost:3000/api/activity-memberships/3/3

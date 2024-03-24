@@ -3,7 +3,7 @@ const { OrganizationMembership } = require('../models/organizationMembershipMode
 const { GroupMembership } = require('../models/groupMembershipModel');
 const { Activity } = require('../models/activityModel');
 const { User } = require('../models/userModel');
-const { or } = require('sequelize');
+const { RoleEnum } = require('../models/common/enum');
 
 const activityMembershipController = {
     createActivityMembership: async (req, res) => {
@@ -29,7 +29,7 @@ const activityMembershipController = {
             const newActivityMembership = await ActivityMembership.create({
                 activity_id: req.params.activityId,
                 user_id: req.params.userId,
-                role: req.body.role
+                role: RoleEnum.Member
             });
 
             const organizationMembership = await OrganizationMembership.findOne({
@@ -43,7 +43,7 @@ const activityMembershipController = {
                 await OrganizationMembership.create({
                     organization_id: activity.organization_id,
                     user_id: req.params.userId,
-                    role: 'member'
+                    role: RoleEnum.Member
                 });
             }
 
