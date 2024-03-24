@@ -1,5 +1,6 @@
 const {Reminder} = require('../models/reminderModel');
 
+// FIXME: Check all fields validity before updating or creating
 const reminderController = {
     createReminder: async (req, res) => {
         try {

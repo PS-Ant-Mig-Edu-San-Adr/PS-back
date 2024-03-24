@@ -2,6 +2,8 @@ const express = require('express');
 const sequelize = require('./config/database'); // Ajustado para importar Sequelize
 const routes = require('./routes');
 const setupAssociations = require('./models/common/associations');
+const {query} = require("express");
+const {setupConstraints} = require("./models/common/constraints");
 
 const app = express();
 const port = 3000;
@@ -10,18 +12,19 @@ app.use(express.json());
 app.use('/api', routes);
 
 sequelize.authenticate()
-    .then(() => {
+   .then(() => {
         console.log('Conectado a la base de datos con Sequelize');
-        
+
         // Establecer las asociaciones entre las tablas
         setupAssociations();
+        setupConstraints();
 
         // Opcional: Sincroniza todos los modelos
         return sequelize.sync({ force: false }); // `force: true` para reiniciar las tablas
     })
     .then(() => {
         console.log('Modelos sincronizados con la base de datos');
-        
+
         app.get('/', (req, res) => {
             res.send('DB connection working on port 3000!');
         });

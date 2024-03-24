@@ -1,0 +1,30 @@
+###
+POST  http://localhost:3000/api/activities/1/1
+Content-Type: application/json
+
+{
+  "name": "Nombre de la actividad",
+  "description": "Descripción de la actividad",
+  "privacy": "privado"
+}
+
+###
+GET  http://localhost:3000/api/activities
+
+
+###
+GET  http://localhost:3000/api/activities/2
+
+###
+PUT  http://localhost:3000/api/activities/2
+Content-Type: application/json
+
+{
+  "name": "Nuevo nombre de la actividad",
+  "description": "Nueva descripción de la actividad",
+  "privacy": "público"
+}
+
+
+###
+DELETE  http://localhost:3000/api/activities/2

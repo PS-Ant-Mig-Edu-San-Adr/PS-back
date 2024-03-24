@@ -25,7 +25,7 @@ router.delete('/organizations/:id', organizationController.deleteOrganization);
 // Actividades
 router.get('/activities', activityController.getAllActivities);
 router.get('/activities/:id', activityController.getActivityById);
-router.post('/activities/:id', activityController.createActivity);
+router.post('/activities/:organizationId/:userId', activityController.createActivity);
 router.put('/activities/:id', activityController.updateActivity);
 router.delete('/activities/:id', activityController.deleteActivity);
 

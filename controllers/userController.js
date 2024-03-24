@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const {Reminder} = require("../models/reminderModel");
 
 const userController = {
+    // FIXME: No dejar que salte el error en la base de datos, comprobar validez de todos los campos previamente, tanto en register como en update
     registerUser: async (req, res) => {
         try {
             const username = req.body.username;
@@ -122,7 +123,7 @@ const userController = {
     getUserReminders: async (req, res) => {
         try {
             const reminders = await Reminder.findAll({
-                where: {userId: req.params.userId}
+                where: {user_id: req.params.id}
             });
             if (reminders.length <= 0) {
                 return res.status(404).json({success: false, result: undefined, details: 'No se encontraron recordatorios para el usuario'});
@@ -141,6 +142,12 @@ const userController = {
             if (!user) {
                 return res.status(404).json({success: false, result: undefined,  details: 'Usuario no encontrado'});
             }
+
+            // `passwordHash` es la contraseña aún sin hashear
+            const password = req.body.passwordHash;
+
+            // Hashear la contraseña antes de almacenarla
+            req.body.passwordHash = crypto.createHash('sha256').update(password).digest('hex');
 
             await user.update(req.body);
             res.json({success: true, result: user, details: 'Usuario actualizado'});

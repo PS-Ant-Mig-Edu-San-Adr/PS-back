@@ -4,11 +4,11 @@ Content-Type: application/json
 
 {
     "parent_organization_id": null,
-    "name": "Nombre de la organización",
-    "description": "Descripción de la organización",
-    "contact": "Información de contacto",
-    "email": "correo@organizacion.com",
-    "domain": "www.organizacion.com",
+    "name": "ULPGC",
+    "description": "Universidad de Las Palmas de Gran Canaria",
+    "contact": "Persona de contacto",
+    "email": "correo@ulpgc.es",
+    "domain": "www.ulpgc.es",
     "privacy": "público"
 }
 
@@ -53,26 +53,8 @@ Content-Type: application/json
     "color": "#FF0000"
 }
 
-### 
-POST http://localhost:3000/api/users/register
-Content-Type: application/json
 
-{
-    "fullName": "Antonio Aparicio",
-    "email": "antonio@example.com",
-    "username": "antonioap101",
-    "passwordHash": "hashdecontraseña",
-    "timeZone": "GMT"        
-}
 
-###
-POST http://localhost:3000/api/users/login
-Content-Type: application/json
-
-{
-"username": "antonioap101",
-"passwordHash": "falso"
-}
 
 ###
 POST http://localhost:3000/api/reminders
@@ -85,7 +67,7 @@ Content-Type: application/json
     "description": "Descripción del recordatorio",
     "start_date": "2024-03-25T09:00:00Z",
     "end_date": "2024-03-25T09:30:00Z",
-    "repeat": "Ninguno",
+    "repeat": "ninguno",
     "color": "#00FF00"    
 }
 
