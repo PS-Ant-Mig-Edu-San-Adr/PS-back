@@ -3,6 +3,7 @@ const {Organization} = require('../models/organizationModel.js');
 const {ActivityMembership} = require('../models/activityMembershipModel.js');
 const {OrganizationMembership} = require('../models/organizationMembershipModel.js');
 const {RoleEnum} = require("../models/common/enum");
+const {User} = require('../models/userModel');
 
 
 const activityController = {
@@ -14,6 +15,11 @@ const activityController = {
             const organization = await Organization.findByPk(organizationId);
             if (!organization) {
                 return res.status(404).json({success: false, details: 'Organización no encontrada'});
+            }
+
+            const user = await User.findByPk(userId);
+            if (!user) {
+                return res.status(404).json({success: false, details: 'Usuario no encontrado'});
             }
 
             const newActivity = await organization.createActivity({
@@ -37,14 +43,6 @@ const activityController = {
                     role: 'admin'
                 });
             }));
-
-            if (OrganizationMembership.findOne({where: {user_id: userId, organization_id: organizationId}})) {
-                await OrganizationMembership.create({
-                    user_id: userId,
-                    organization_id: organizationId,
-                    role: RoleEnum.Member
-                });
-            }
 
             // FIXME: Replace userId with the userId obtained from tokens middleware
             await ActivityMembership.create({

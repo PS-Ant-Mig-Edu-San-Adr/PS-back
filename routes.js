@@ -17,7 +17,8 @@ const userController = require('./controllers/userController');
 router.get('/organizations', organizationController.getAllOrganizations);
 router.get('/organizations/:id', organizationController.getOrganizationById);
 router.get('/organizations/:id/activities', organizationController.getOrganizationActivities);
-router.post('/organizations', organizationController.createOrganization);
+router.get('/organizations/byname/:name', organizationController.getOrganizationsByName);
+router.post('/organizations/:userId', organizationController.createOrganization);
 router.put('/organizations/:id', organizationController.updateOrganization);
 router.delete('/organizations/:id', organizationController.deleteOrganization);
 
@@ -29,6 +30,12 @@ router.post('/activities/:organizationId/:userId', activityController.createActi
 router.put('/activities/:id', activityController.updateActivity);
 router.delete('/activities/:id', activityController.deleteActivity);
 
+// Grupos
+router.get('/groups', groupController.getAllGroups);
+router.get('/groups/:id', groupController.getGroupById);
+router.post('/groups/:activityId/:userId', groupController.createGroup);
+router.put('/groups/:id', groupController.updateGroup);
+router.delete('/groups/:id', groupController.deleteGroup);
 
 // Eventos
 router.get('/events', eventController.getAllEvents);
@@ -44,20 +51,12 @@ router.post('/reminders', reminderController.createReminder);
 router.put('/reminders/:id', reminderController.updateReminder);
 router.delete('/reminders/:id', reminderController.deleteReminder);
 
-
-// Grupos
-router.get('/groups', groupController.getAllGroups);
-router.get('/groups/:id', groupController.getGroupById);
-router.post('/groups', groupController.createGroup);
-router.put('/groups/:id', groupController.updateGroup);
-router.delete('/groups/:id', groupController.deleteGroup);
-
 // Membresías de organización
 router.get('/organization-memberships', organizationMembershipController.getAllOrganizationMemberships);
 router.get('/organization-memberships/:id', organizationMembershipController.getOrganizationMembershipById);
-router.post('/organization-memberships', organizationMembershipController.createOrganizationMembership);
-router.put('/organization-memberships/:id', organizationMembershipController.updateOrganizationMembership);
-router.delete('/organization-memberships/:id', organizationMembershipController.deleteOrganizationMembership);
+router.post('/organization-memberships/:organizationId/:userId', organizationMembershipController.createOrganizationMembership);
+router.put('/organization-memberships/:organizationId/:userId', organizationMembershipController.updateOrganizationMembership);
+router.delete('/organization-memberships/:organizationId/:userId', organizationMembershipController.deleteOrganizationMembership);
 
 // Membresías de actividad
 router.get('/activity-memberships', activityMembershipController.getAllActivityMemberships);
@@ -69,15 +68,16 @@ router.delete('/activity-memberships/:activityId/:userId', activityMembershipCon
 // Membresías de grupo
 router.get('/group-memberships', groupMembershipController.getAllGroupMemberships);
 router.get('/group-memberships/:id', groupMembershipController.getGroupMembershipById);
-router.post('/group-memberships', groupMembershipController.createGroupMembership);
-router.put('/group-memberships/:id', groupMembershipController.updateGroupMembership);
-router.delete('/group-memberships/:id', groupMembershipController.deleteGroupMembership);
+router.post('/group-memberships/:groupId/:userId', groupMembershipController.createGroupMembership);
+router.put('/group-memberships/:groupId/:userId', groupMembershipController.updateGroupMembership);
+router.delete('/group-memberships/:groupId/:userId', groupMembershipController.deleteGroupMembership);
 
 
 // Usuarios
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
 router.get('/users/:id/activities', userController.getUserActivities);
+router.get('/users/:id/organizations', userController.getUserOrganizations);
 router.get('/users/:id/reminders', userController.getUserReminders);
 router.post('/users/register', userController.registerUser);
 router.post('/users/login', userController.loginUser);

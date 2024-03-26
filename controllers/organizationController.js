@@ -1,12 +1,30 @@
-// organizationsController.js
+
 
 const { Organization } = require('../models/organizationModel.js');
+const { User } = require('../models/userModel.js');
+const { Activity } = require('../models/activityModel.js');
+const { OrganizationMembership } = require('../models/organizationMembershipModel.js');
 
 const organizationsController = {
   createOrganization: async (req, res) => {
     try {
-      const organization = await Organization.create(req.body);
-      return res.status(200).json({ success: true, details: 'Organización creada correctamente', result: organization });
+      const  userId = req.params.userId;
+
+      const existingOrganization = await Organization.findOne({ where: { name: req.body.name } });
+      const user = await User.findByPk(userId);
+
+      if (existingOrganization) {
+        return res.status(404).json({ success: false, details: 'La organización ya existe' });
+      }else if (!user) {
+        return res.status(404).json({ success: false, details: 'El usuario no existe' });
+      }
+
+      const newOrganization = await Organization.create(req.body);
+
+      await OrganizationMembership.create({ user_id: userId, organization_id: newOrganization.id, role: 'admin' });
+
+      return res.status(200).json({ success: true, details: 'Organización creada', result: newOrganization });
+
     } catch (error) {
       return res.status(400).json({ success: false, details: error.message });
     }
@@ -46,17 +64,33 @@ const organizationsController = {
     }
   },
 
+  getOrganizationsByName: async (req, res) => {
+    try {
+      const organizations = await Organization.findAll({
+        where: { name: req.params.name }
+      });
+
+      if (organizations.length > 0) {
+        return res.status(200).json({ success: true, details: 'Organizaciones encontradas', result: organizations });
+      } else {
+        return res.status(404).json({ success: false, details: 'No se encontraron organizaciones' });
+      }
+    } catch (error) {
+        return res.status(500).json({ success: false, details: error.message });
+    }
+  },
+
   getOrganizationActivities: async (req, res) => {
     try {
       const organization = await Organization.findByPk(req.params.id);
       if (organization) {
         const activities = await organization.getActivities();
-        return res.status(200).json({ status: 200, success: true, details: 'La organización no tiene actividades', activities });
+        return res.status(200).json({ success: true, details: 'La organización no tiene actividades', result: activities});
       } else {
-        return res.status(404).json({ status: 404, success: false, details: 'Organización no encontrada' });
+        return res.status(404).json({ success: false, details: 'Organización no encontrada' });
       }
     } catch (error) {
-        return res.status(500).json({ status: 500, success: false, details: 'Error interno del servidor' });
+        return res.status(500).json({ success: false, details: 'Error interno del servidor' });
     }
   },
 
@@ -80,8 +114,8 @@ const organizationsController = {
     try {
       const organization = await Organization.findByPk(req.params.id);
       if (organization) {
-        return await organization.destroy();
-        res.status(200).json({ success: true, details: 'Organización eliminada' });
+        await organization.destroy();
+        return res.status(200).json({ success: true, details: 'Organización eliminada' });
       } else {
         return res.status(404).json({ success: false, details: 'Organización no encontrada' });
       }
