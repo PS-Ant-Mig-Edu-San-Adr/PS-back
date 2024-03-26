@@ -4,11 +4,13 @@ const routes = require('./routes');
 const setupAssociations = require('./models/common/associations');
 const {query} = require("express");
 const {setupConstraints} = require("./models/common/constraints");
+const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
+app.use(cors());
 app.use('/api', routes);
 
 sequelize.authenticate()

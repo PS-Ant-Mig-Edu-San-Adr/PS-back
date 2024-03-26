@@ -37,23 +37,22 @@ const userController = {
                 tags: req.body.tags
             });
 
-            res.status(201).json({success: true, result: user, details: "Usuario creado exitosamente"});
+            res.status(200).json({success: true, result: user, details: "Usuario creado exitosamente"});
         } catch (error) {
             res.status(400).json({success: false, result: undefined, details: error.message});
         }
     },
     loginUser: async (req, res) => {
         try {
-            const username = req.body.username;
-            const password = req.body.passwordHash;
+            const email = req.body.email;
+            const password = req.body.password;
 
-            // Hashear la contraseña antes de compararla
             const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
             // Buscamos si existe el usuario
             const user = await User.findOne({
                 where: {
-                    username: username,
+                    email: email,
                     passwordHash: hashedPassword
                 }
             });
