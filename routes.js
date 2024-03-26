@@ -33,6 +33,7 @@ router.delete('/activities/:id', activityController.deleteActivity);
 // Grupos
 router.get('/groups', groupController.getAllGroups);
 router.get('/groups/:id', groupController.getGroupById);
+router.get('/groups/:id/events', groupController.getGroupEvents);
 router.post('/groups/:activityId/:userId', groupController.createGroup);
 router.put('/groups/:id', groupController.updateGroup);
 router.delete('/groups/:id', groupController.deleteGroup);
@@ -40,7 +41,7 @@ router.delete('/groups/:id', groupController.deleteGroup);
 // Eventos
 router.get('/events', eventController.getAllEvents);
 router.get('/events/:id', eventController.getEventById);
-router.post('/events', eventController.createEvent);
+router.post('/events/:id', eventController.createEvent);
 router.put('/events/:id', eventController.updateEvent);
 router.delete('/events/:id', eventController.deleteEvent);
 
